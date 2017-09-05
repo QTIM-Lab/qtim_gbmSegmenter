@@ -13,11 +13,12 @@ def nifti_2_numpy(filepath):
     img = nib.load(filepath).get_data().astype(float)
     return img
 
-def save_numpy_2_nifti(image_numpy, reference_nifti_filepath, output_path):
+def save_numpy_2_nifti(image_numpy, reference_nifti_filepath=None, output_path=None, reference_affine=None):
 
-    nifti_image = nib.load(reference_nifti_filepath)
-    image_affine = nifti_image.affine
-    output_nifti = nib.Nifti1Image(image_numpy, image_affine)
+    if reference_affine is None:
+        nifti_image = nib.load(reference_nifti_filepath)
+        reference_affine = nifti_image.affine
+    output_nifti = nib.Nifti1Image(image_numpy, reference_affine)
     nib.save(output_nifti, output_path)
 
 def run_test():

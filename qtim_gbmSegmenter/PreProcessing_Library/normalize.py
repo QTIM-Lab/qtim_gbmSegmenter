@@ -17,7 +17,7 @@ def normalize_zeromean_unitvariance(normalize_volume, output_filename, label_vol
 			return
 
 	try:
-                print '\n'
+		print '\n'
 		print 'Using python\'s Nibabel and Numpy packages to normalize intensities within a region of interest to zero mean and unit variance on volume ' + normalize_volume + ' to output volume ' + output_filename + '...'
 
 		normalize_numpy = common.nifti_2_numpy(normalize_volume)

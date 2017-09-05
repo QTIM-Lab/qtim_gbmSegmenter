@@ -1,7 +1,10 @@
 import Scripts.Slicer_Import_Dicom
 
 import os
+import glob
 import inspect
+import dcmstack
+import dicom
 
 from subprocess import call, check_output
 
@@ -52,15 +55,37 @@ def slicer_convert(dicom_folder, output_filename):
 
     return
 
+def python_convert(dicom_folder, output_filename):
+
+    output_directory = os.path.dirname(output_filename)
+
+    src_paths = glob.glob(os.path.join(dicom_folder, '*.dcm'))
+
+    data_stack = dcmstack.DicomStack()
+    for src_path in src_paths:
+         src_dcm = dicom.read_file(src_path)
+         data_stack.add_dcm(src_dcm)
+
+    data_meta = data_stack.to_nifti_wrapper()
+    series_description = data_meta['SeriesDescription'].replace(' ', '')
+    patient_id = src_dcm.PatientID.replace(' ', '')
+
+    data_affine = data_stack.get_affine()
+    data_nifti = data_stack.to_nifti()
+    data_nifti.to_filename(os.path.join(output_directory, patient_id + '_' + series_description + '.nii.gz'))
+
+    pass
+
 def execute(input_volume, output_filename, specific_function, params):
 
     if specific_function == 'freesurfer_mri_convert':
         mri_convert(*[input_volume, output_filename] + params)
-    if specific_function == 'slicer_convert':
+    elif specific_function == 'slicer_convert':
         slicer_convert(*[input_volume, output_filename] + params)       
+    elif specific_function == 'python_convert':
+        python_convert(*[input_volume, output_filename] + params)       
     else:
         print 'There is no conversion method associated with this keyword: ' + specific_function + '. Skipping volume located at...' + input_volume
-
 
 def run_test():
     return

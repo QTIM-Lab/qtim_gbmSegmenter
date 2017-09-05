@@ -7,7 +7,7 @@ import qtim_gbmSegmenter.Config_Library.pipeline as pipeline
 
 #--------------------------------------------------------------------#
 # DICOM Conversion Step
-# Available methods: 'freesurfer_mri_convert'
+# Available methods: 'python_convert'
 
 input_files = ['./INPUT_DATA/TCGA-02-0054']
 input_search_phrase = '*'
@@ -16,8 +16,9 @@ input_exclusion_phrase = ''
 output_folder = './INPUT_DATA/RAW_NIFTI'
 output_suffix = ''
 
-method = 'freesurfer_mri_convert'
+method = 'python_convert'
 
+chosen_sequences = []
 extra_parameters = []
 
 pipeline.execute('dicom_convert', input_files, input_search_phrase, input_exclusion_phrase, output_folder, output_suffix, method, extra_parameters)
@@ -25,21 +26,21 @@ pipeline.execute('dicom_convert', input_files, input_search_phrase, input_exclus
 # #--------------------------------------------------------------------#
 
 # # #--------------------------------------------------------------------#
-# # Bias Correction Step
-# # Available methods: 'ants_n4_bias'
+# Bias Correction Step
+# Available methods: 'ants_n4_bias'
 
-# input_files = ['./INPUT_DATA/RAW_NIFTI']
-# input_search_phrase = '*.nii*'
-# input_exclusion_phrase = ''
+input_files = ['./INPUT_DATA/RAW_NIFTI']
+input_search_phrase = '*.nii*'
+input_exclusion_phrase = ''
 
-# output_folder = './INPUT_DATA/BIAS_CORRECTED_NIFTI'
-# output_suffix = '_nobias'
+output_folder = './INPUT_DATA/BIAS_CORRECTED_NIFTI'
+output_suffix = '_nobias'
 
-# method = 'ants_n4_bias'
+method = 'ants_n4_bias'
 
-# extra_parameters = []
+extra_parameters = []
 
-# pipeline.execute('bias_correct', input_files, input_search_phrase, input_exclusion_phrase, output_folder, output_suffix, method, extra_parameters)
+pipeline.execute('bias_correct', input_files, input_search_phrase, input_exclusion_phrase, output_folder, output_suffix, method, extra_parameters)
 
 # #--------------------------------------------------------------------#
 
@@ -90,6 +91,27 @@ pipeline.execute('dicom_convert', input_files, input_search_phrase, input_exclus
 # # # #--------------------------------------------------------------------#
 
 # # #--------------------------------------------------------------------#
+# # Normalizing Step
+# # Available methods: 'zeromean_normalize'
+
+# input_files = ['./INPUT_DATA/SKULLSTRIP_NIFTI']
+# input_search_phrase = '*_skullstripped.nii*'
+# input_exclusion_phrase = ''
+
+# output_folder = './INPUT_DATA/NORMALIZED_NIFTI'
+# output_suffix = '_normalized'
+
+# method = 'zeromean_normalize'
+
+# label_volume = ''
+# label_volume_search_phrase = '*_mask.nii*'
+# extra_parameters = [label_volume, label_volume_search_phrase]
+
+# pipeline.execute('normalize', input_files, input_search_phrase, input_exclusion_phrase, output_folder, output_suffix, method, extra_parameters)
+
+# # #--------------------------------------------------------------------#
+
+# # #--------------------------------------------------------------------#
 # # Skull-Stripping Step
 # # Available methods: 'deepneuro_skullstripping'
 
@@ -133,27 +155,6 @@ pipeline.execute('dicom_convert', input_files, input_search_phrase, input_exclus
 # pipeline.execute('crop', input_files, input_search_phrase, input_exclusion_phrase, output_folder, output_suffix, method, extra_parameters)
 
 # # #--------------------------------------------------------------------#
-
-# # #--------------------------------------------------------------------#
-# # Normalizing Step
-# # Available methods: 'zeromean_normalize'
-
-# input_files = ['./INPUT_DATA/SKULLSTRIP_NIFTI']
-# input_search_phrase = '*_skullstripped.nii*'
-# input_exclusion_phrase = ''
-
-# output_folder = './INPUT_DATA/NORMALIZED_NIFTI'
-# output_suffix = '_normalized'
-
-# method = 'zeromean_normalize'
-
-# label_volume = ''
-# label_volume_search_phrase = '*_mask.nii*'
-# extra_parameters = [label_volume, label_volume_search_phrase]
-
-# pipeline.execute('normalize', input_files, input_search_phrase, input_exclusion_phrase, output_folder, output_suffix, method, extra_parameters)
-
-# #--------------------------------------------------------------------#
 
 # # #--------------------------------------------------------------------#
 # # Segmentation Step

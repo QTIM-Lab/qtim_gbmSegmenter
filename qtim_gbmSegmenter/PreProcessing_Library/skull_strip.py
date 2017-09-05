@@ -1,6 +1,8 @@
 from subprocess import call
 import os
 
+from qtim_gbmSegmenter.Config_Library.step import PipelineStep
+
 def skull_strip_fsl(bet_volume, output_filename, output_mask_suffix='_mask', skull_strip_threshold=.5, skull_strip_vertical_gradient=0):
     
     # Note - include head radius and center options in the future.
@@ -25,7 +27,7 @@ def skull_strip_fsl(bet_volume, output_filename, output_mask_suffix='_mask', sku
 
 def skull_strip_deepneuro(bet_volume, output_filename, output_mask_suffix='_mask', skull_strip_threshold=.5, skull_strip_vertical_gradient=0):
 
-    
+    pass  
 
 def execute(input_volume, output_filename, specific_function, params):
 

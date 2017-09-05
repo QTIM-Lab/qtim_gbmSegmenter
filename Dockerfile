@@ -156,12 +156,6 @@ RUN pip install qtim_tools nibabel pydicom
     curl -v -s -L $SLICER_URL | tar xz -C /tmp && \
     mv /tmp/Slicer* /opt/slicer
 
-# Install FreeSurfer
-RUN bash && \
-  wget ftp://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/6.0.0/freesurfer-Linux-centos6_x86_64-stable-pub-v6.0.0.tar.gz && \
-  tar -C /usr/local -xzvf freesurfer-Linux-centos6_x86_64-stable-pub-v6.0.0.tar.gz && \
-  rm freesurfer-Linux-centos6_x86_64-stable-pub-v6.0.0.tar.gz
-
 # Install ANTS
 WORKDIR /home
 RUN wget "https://github.com/stnava/ANTs/releases/download/v2.1.0/Linux_Debian_jessie_x64.tar.bz2" && \
@@ -169,18 +163,24 @@ RUN wget "https://github.com/stnava/ANTs/releases/download/v2.1.0/Linux_Debian_j
   tar -C /usr/local -xjf Linux_Debian_jessie_x64.tar.bz2 && \
   rm Linux_Debian_jessie_x64.tar.bz2
 
+# Install FreeSurfer
+#RUN bash && \
+#  wget ftp://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/6.0.0/freesurfer-Linux-centos6_x86_64-stable-pub-v6.0.0.tar.gz && \
+#  tar -C /usr/local -xzvf freesurfer-Linux-centos6_x86_64-stable-pub-v6.0.0.tar.gz && \
+#  rm freesurfer-Linux-centos6_x86_64-stable-pub-v6.0.0.tar.gz
+
 # Environmental Variables
-ENV FSLDIR /usr/share/fsl/5.0
-ENV FREESURFER_HOME /usr/local/freesurfer 
+# ENV FSLDIR /usr/share/fsl/5.0
+# ENV FREESURFER_HOME /usr/local/freesurfer 
 ENV PATH "$PATH:/opt/slicer"
-ENV PATH "$PATH:${FSLDIR}/bin"
-ENV PATH "$PATH:/usr/local/debian_jessie"
+# ENV PATH "$PATH:${FSLDIR}/bin"
+# ENV PATH "$PATH:/usr/local/debian_jessie"
 
 # Pull git repository for qtim_gbmSegmenter
 RUN git clone https://github.com/QTIM-Lab/qtim_gbmSegmenter /home/qtim_gbmSegmenter
 
 # FreeSurfer License
-RUN mv /home/qtim_gbmSegmenter/PreProcessing_Library/Scripts/FreeSurfer_Resources/license.txt /usr/local/freesurfer
+# RUN mv /home/qtim_gbmSegmenter/PreProcessing_Library/Scripts/FreeSurfer_Resources/license.txt /usr/local/freesurfer
 
 # Startup Scripts
 RUN echo "source $FREESURFER_HOME/SetUpFreeSurfer.sh" >> ~/.bashrc

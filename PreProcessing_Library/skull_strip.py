@@ -23,9 +23,15 @@ def skull_strip_fsl(bet_volume, output_filename, output_mask_suffix='_mask', sku
 
     return
 
+def skull_strip_deepneuro(bet_volume, output_filename, output_mask_suffix='_mask', skull_strip_threshold=.5, skull_strip_vertical_gradient=0):
+
+    
+
 def execute(input_volume, output_filename, specific_function, params):
 
     if specific_function == 'fsl_skull_stripping':
+        skull_strip_fsl(*[input_volume, output_filename] + params)
+    elif specific_function == 'deepneuro_skull_stripping':
         skull_strip_fsl(*[input_volume, output_filename] + params)
     else:
         print 'There is no skull-stripping method associated with this keyword: ' + specific_function + '. Skipping volume located at...' + input_volume

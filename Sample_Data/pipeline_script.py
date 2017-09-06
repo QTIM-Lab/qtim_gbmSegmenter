@@ -142,25 +142,25 @@ pipeline.execute('skull_strip', input_files, input_contains, input_does_not_cont
 # # #--------------------------------------------------------------------#
 
 # # #--------------------------------------------------------------------#
-# # Cropping Step
-# # Available methods: 'python_crop'
+# Cropping Step
+# Available methods: 'python_crop'
 
-# input_files = ['./INPUT_DATA/REGISTERED_NIFTI']
-# input_contains = '*.nii*'
-# input_does_not_contain = ''
+input_files = ['./INPUT_DATA/SKULLSTRIP_NIFTI']
+input_contains = '*_skullstripped_mask.nii*'
+input_does_not_contain = ''
 
-# output_folder = './INPUT_DATA/SKULLSTRIP_NIFTI'
-# output_suffix = '_skullstripped'
+output_folder = './INPUT_DATA/SKULLSTRIP_NIFTI'
+output_suffix = '_skullstripped'
 
-# method = 'python_crop'
+method = 'python_crop'
 
-# label_volume = ''
-# label_volume_dir = './INPUT_DATA/SKULLSTRIP_NIFTI'
-# label_volume_contains = '*_mask.nii*'
-# background_value = 0
-# extra_parameters = [label_volume, label_volume_dir, label_volume_contains, background_value]
+label_volume = ''
+label_volume_dir = './INPUT_DATA/SKULLSTRIP_NIFTI'
+label_volume_contains = '*_mask.nii*'
+background_value = 0
+extra_parameters = [label_volume, label_volume_dir, label_volume_contains, background_value]
 
-# pipeline.execute('crop', input_files, input_contains, input_does_not_contain, output_folder, output_suffix, method, extra_parameters)
+pipeline.execute('crop', input_files, input_contains, input_does_not_contain, output_folder, output_suffix, method, extra_parameters)
 
 # # #--------------------------------------------------------------------#
 

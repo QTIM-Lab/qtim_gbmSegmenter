@@ -34,9 +34,9 @@ import qtim_gbmSegmenter.Config_Library.pipeline as pipeline
 
 # #--------------------------------------------------------------------#
 
-# # # #--------------------------------------------------------------------#
-# # Bias Correction Step
-# # Available methods: 'ants_n4_bias'
+# # #--------------------------------------------------------------------#
+# Bias Correction Step
+# Available methods: 'ants_n4_bias'
 
 # input_files = ['./INPUT_DATA/RAW_NIFTI']
 # input_contains = '*.nii*'
@@ -88,7 +88,7 @@ import qtim_gbmSegmenter.Config_Library.pipeline as pipeline
 # method = 'slicer_registration'
 
 # fixed_volume = ''
-# fixed_volume_contains = '*AXT2*'
+# fixed_volume_contains = '*AxT2*'
 # transform_type='Rigid,ScaleVersor3D,ScaleSkewVersor3D,Affine'
 # transform_mode = 'useMomentsAlign'
 # interpolation_mode = 'Linear'
@@ -97,70 +97,114 @@ import qtim_gbmSegmenter.Config_Library.pipeline as pipeline
 
 # pipeline.execute('register', input_files, input_contains, input_does_not_contain, output_folder, output_suffix, method, extra_parameters)
 
-# # # # #--------------------------------------------------------------------#
+# # # #--------------------------------------------------------------------#
 
 # # # #--------------------------------------------------------------------#
-# # # Normalizing Step
-# # # Available methods: 'zeromean_normalize'
+# # # Skull-Stripping Step
+# # # Available methods: 'deepneuro_skull_stripping'
 
 # input_files = ['./INPUT_DATA/REGISTERED_NIFTI']
 # input_contains = '*.nii*'
 # input_does_not_contain = ''
 
-# output_folder = './INPUT_DATA/NORMALIZED_NIFTI'
-# output_suffix = '_normalized'
+# output_folder = './INPUT_DATA/SKULLSTRIP_NIFTI'
+# output_suffix = '_skullstripped'
 
-# method = 'zeromean_normalize'
+# method = 'fsl_skull_stripping'
 
-# label_volume = ''
-# label_volume_contains = ''
-# extra_parameters = [label_volume, label_volume_contains]
+# modality_codes = {'FLAIR': '*FLAIR*', 'T2': '*T2*', 'T1': '*T1.*', 'T1post': '*T1POST*'}
+# output_mask_suffix = '_mask'
+# extra_parameters = [output_mask_suffix]
 
-# pipeline.execute('normalize', input_files, input_contains, input_does_not_contain, output_folder, output_suffix, method, extra_parameters)
+# pipeline.execute('skull_strip', input_files, input_contains, input_does_not_contain, output_folder, output_suffix, method, extra_parameters)
 
-# # #--------------------------------------------------------------------#
+# # # #--------------------------------------------------------------------#
 
-# # #--------------------------------------------------------------------#
-# # Skull-Stripping Step
-# # Available methods: 'deepneuro_skull_stripping'
-
-input_files = ['./INPUT_DATA/NORMALIZED_NIFTI']
-input_contains = '*.nii*'
-input_does_not_contain = ''
-
-output_folder = './INPUT_DATA/SKULLSTRIP_NIFTI'
-output_suffix = '_skullstripped'
-
-method = 'deepneuro_skull_stripping'
-
-modality_codes = {'FLAIR': '*FLAIR*', 'T2': '*T2*', 'T1': '*T1.*', 'T1post': '*T1POST*'}
-output_mask_suffix = '_mask'
-extra_parameters = [output_mask_suffix, modality_codes]
-
-pipeline.execute('skull_strip', input_files, input_contains, input_does_not_contain, output_folder, output_suffix, method, extra_parameters)
-
-# # #--------------------------------------------------------------------#
-
-# # #--------------------------------------------------------------------#
+# # # #--------------------------------------------------------------------#
 # Cropping Step
 # Available methods: 'python_crop'
 
+# input_files = ['./INPUT_DATA/REGISTERED_NIFTI']
+# input_contains = '*_reg*'
+# input_does_not_contain = ''
+
+# output_folder = './INPUT_DATA/SKULLSTRIP_NIFTI'
+# output_suffix = '_skullstripped'
+
+# method = 'python_crop'
+
+# label_volume = ''
+# label_volume_dir = './INPUT_DATA/SKULLSTRIP_NIFTI'
+# label_volume_contains = '*_mask.nii*'
+# background_value = 0
+# extra_parameters = [label_volume, label_volume_dir, label_volume_contains, background_value]
+
+# pipeline.execute('crop', input_files, input_contains, input_does_not_contain, output_folder, output_suffix, method, extra_parameters)
+
+# # #--------------------------------------------------------------------#
+
+# # #--------------------------------------------------------------------#
+# # Normalizing Step
+# # Available methods: 'zeromean_normalize'
+
 input_files = ['./INPUT_DATA/SKULLSTRIP_NIFTI']
-input_contains = '*_skullstripped_mask.nii*'
+input_contains = '*.nii*'
 input_does_not_contain = ''
 
-output_folder = './INPUT_DATA/SKULLSTRIP_NIFTI'
-output_suffix = '_skullstripped'
+output_folder = './INPUT_DATA/NORMALIZED_NIFTI'
+output_suffix = '_normalized'
 
-method = 'python_crop'
+method = 'zeromean_normalize'
 
 label_volume = ''
-label_volume_dir = './INPUT_DATA/SKULLSTRIP_NIFTI'
-label_volume_contains = '*_mask.nii*'
-background_value = 0
-extra_parameters = [label_volume, label_volume_dir, label_volume_contains, background_value]
+label_volume_contains = '*_skullstripped_mask*'
+extra_parameters = [label_volume, label_volume_contains]
 
-pipeline.execute('crop', input_files, input_contains, input_does_not_contain, output_folder, output_suffix, method, extra_parameters)
+pipeline.execute('normalize', input_files, input_contains, input_does_not_contain, output_folder, output_suffix, method, extra_parameters)
+
+# # #--------------------------------------------------------------------#
+
+# # # #--------------------------------------------------------------------#
+# # # Skull-Stripping Step
+# # # Available methods: 'deepneuro_skull_stripping'
+
+# input_files = ['./INPUT_DATA/NORMALIZED_NIFTI']
+# input_contains = '*.nii*'
+# input_does_not_contain = ''
+
+# output_folder = './INPUT_DATA/SKULLSTRIP_NIFTI'
+# output_suffix = '_skullstripped'
+
+# method = 'deepneuro_skull_stripping'
+
+# modality_codes = {'FLAIR': '*FLAIR*', 'T2': '*T2*', 'T1': '*T1.*', 'T1post': '*T1POST*'}
+# output_mask_suffix = '_mask'
+# extra_parameters = [output_mask_suffix, modality_codes]
+
+# pipeline.execute('skull_strip', input_files, input_contains, input_does_not_contain, output_folder, output_suffix, method, extra_parameters)
+
+# # # #--------------------------------------------------------------------#
+
+# # # #--------------------------------------------------------------------#
+# # Cropping Step
+# # Available methods: 'python_crop'
+
+# input_files = ['./INPUT_DATA/SKULLSTRIP_NIFTI']
+# input_contains = '*_skullstripped_mask.nii*'
+# input_does_not_contain = ''
+
+# output_folder = './INPUT_DATA/SKULLSTRIP_NIFTI'
+# output_suffix = '_skullstripped'
+
+# method = 'python_crop'
+
+# label_volume = ''
+# label_volume_dir = './INPUT_DATA/SKULLSTRIP_NIFTI'
+# label_volume_contains = '*_mask.nii*'
+# background_value = 0
+# extra_parameters = [label_volume, label_volume_dir, label_volume_contains, background_value]
+
+# pipeline.execute('crop', input_files, input_contains, input_does_not_contain, output_folder, output_suffix, method, extra_parameters)
 
 # # #--------------------------------------------------------------------#
 

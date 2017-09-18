@@ -10,7 +10,7 @@ def skull_strip_fsl(bet_volume, output_filename, output_mask_suffix='_mask', sku
     
     # Note - include head radius and center options in the future.
 
-    bet_base_command = ['bet2', bet_volume, output_filename, '-f', str(skull_strip_threshold), '-g', str(skull_strip_vertical_gradient), '-m']
+    bet_base_command = ['fsl4.1-bet2', bet_volume, output_filename, '-f', str(skull_strip_threshold), '-g', str(skull_strip_vertical_gradient), '-m']
 
     bet_specific_command = bet_base_command
 

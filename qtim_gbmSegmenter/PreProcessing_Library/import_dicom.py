@@ -74,6 +74,8 @@ def python_convert(dicom_folder, output_filename):
     data_nifti = data_stack.to_nifti()
     data_nifti.to_filename(os.path.join(output_directory, patient_id + '_' + series_description + '.nii.gz'))
 
+    return output_niftis
+
     pass
 
 def execute(input_volume, output_filename, specific_function, params):

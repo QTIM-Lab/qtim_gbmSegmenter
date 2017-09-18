@@ -126,9 +126,13 @@ def execute(preprocess_step, input_files, input_search_phrase, input_exclusion_p
 
     if preprocess_step in ['dicom_convert']:
         input_volumes = grab_folders_recursive(input_files, input_search_phrase, input_exclusion_phrase)
-    else:
+    elif isinstance(input_files, basestring):
         input_volumes = grab_files(input_files, input_search_phrase, input_exclusion_phrase)
+    else:
+        input_volumes = input_files
     
+    output_filenames = []
+
     for single_volume in input_volumes:
 
         if preprocess_step in ['dicom_convert']:
@@ -136,7 +140,7 @@ def execute(preprocess_step, input_files, input_search_phrase, input_exclusion_p
         else:
             output_filename = grab_output_filepath(single_volume, output_folder, output_suffix, make_dir=True)
 
-        preprocessing_dictionary[preprocess_step].execute(single_volume, output_filename, method, params)
+        output_filenames += [preprocessing_dictionary[preprocess_step].execute(single_volume, output_filename, method, params)]
 
     return
 

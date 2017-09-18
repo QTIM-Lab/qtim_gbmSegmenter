@@ -17,17 +17,20 @@ def resample_slicer(resample_volume, output_filename, dimensions=[1,1,1], interp
 		print '\n'
 		print 'Using 3DSlicer\'s ResampleVolume to resample ' + resample_volume + ' to ' + str(dimensions) + '...'
 		call(' '.join(ResampleVolume_specific_command), shell=True)
+		return output_filename
 	except:
 		print '3DSlicer\'s resample volume failed for file ' + resample_volume
+		return []
 
 	return
 
 def execute(input_volume, output_filename, specific_function, params):
 
 	if specific_function == 'slicer_resample':
-		resample_slicer(*[input_volume, output_filename] + params)
+		return resample_slicer(*[input_volume, output_filename] + params)
 	else:
 		print 'There is no resampling method associated with this keyword: ' + specific_function + '. Skipping volume located at...' + input_volume
+		return []
 
 def run_test():
 	return

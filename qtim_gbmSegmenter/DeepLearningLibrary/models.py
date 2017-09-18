@@ -13,8 +13,8 @@ def skull_strip_models():
     print("Loading skull-stripping model.")
 
     model_dict = {}
-    for modality in ['FLAIR', 'T2', 'T1post', 'T1']:
-        model_dict[modality] = load_old_model(os.path.join(os.path.dirname(__file__),'model_data', modality + '_ss.h5'))
+    for modality in ['FLAIR', 'T2']:
+        model_dict[modality] = os.path.join(os.path.dirname(__file__),'model_data', modality + '_ss.h5')
         print os.path.join(os.path.dirname(__file__),'model_data', modality + '_ss.h5'), 'loaded!'
 
     return model_dict

@@ -4,7 +4,7 @@ import fnmatch
 from subprocess import call
 
 from qtim_gbmSegmenter.Config_Library.step import PipelineStep
-from qtim_gbmSegmenter.DeepLearningLibrary.models import skull_strip_models, evaluate_model
+from qtim_gbmSegmenter.DeepLearningLibrary.models import skull_strip_models, evaluate_model, load_old_model
 
 def skull_strip_fsl(bet_volume, output_filename, output_mask_suffix='_mask', skull_strip_threshold=.5, skull_strip_vertical_gradient=0):
     
@@ -28,30 +28,28 @@ def skull_strip_fsl(bet_volume, output_filename, output_mask_suffix='_mask', sku
 
     return
 
-def skull_strip_deepneuro(input_filename, output_filename, output_mask_suffix='_mask', modality_codes={}):
+def skull_strip_deepneuro(input_filename, output_filename, T2_input_modality='*T2*', FLAIR_input_modality='*FLAIR*'):
 
     model_dict = skull_strip_models()
 
-    target_modality = None
-    for modality in modality_codes.keys():
-        if fnmatch.fnmatch(os.path.basename(input_filename), modality_codes[modality]):
-            target_modality = modality
+    target_file = None
+    for model_filename, modality_code in [[T2_input_modality, model_dict['T2']], [FLAIR_input_modality, model_dict['FLAIR']]]:
+        if fnmatch.fnmatch(os.path.basename(input_filename), modality_code):
+            target_file = input_filename
+            target_model = model_filename
 
     if target_modality is None:
         print 'No modality matched for skull-stripping file: ', input_filename
         return
-
-    no_path = os.path.basename(os.path.normpath(output_filename))
-    file_prefix = str.split(no_path, '.nii')
-    output_mask_filename = os.path.join(os.path.dirname(output_filename), file_prefix[0] + output_mask_suffix + '.nii.gz')
     
     input_filename = os.path.abspath(input_filename)
-    print model_dict[target_modality], input_filename
-    print input_filename, output_mask_filename
 
-    evaluate_model(model_dict[target_modality], os.path.abspath(input_filename), os.path.abspath(output_mask_filename), patch_shape=(32,32,32))
-
-    pass  
+    try: 
+        evaluate_model(load_old_model(target_model), os.path.abspath(input_filename), os.path.abspath(output_filename), patch_shape=(32,32,32))
+        return output_filename
+    except:
+        print 'DeepNeuro skull-stripping failed for file ' + input_filename
+        return []  
 
 def execute(input_volume, output_filename, specific_function, params):
 

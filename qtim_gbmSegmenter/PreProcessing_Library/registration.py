@@ -18,12 +18,12 @@ def BRAINSFit_register(moving_volume, output_filename, fixed_volume, fixed_volum
         else:
             print 'Error! Search phrase for fixed registration volume returned either no or multiple results. Cancelling registration, results printed below...'
             print fixed_volume_results
-            return
+            return []
 
     if fixed_volume == moving_volume:
         print 'Cannot register a volume to itself! Copying over and skipping this volume...'
         copyfile(fixed_volume, output_filename)
-        return
+        return output_filename
 
     BRAINSFit_base_command = ['Slicer', '--launch', 'BRAINSFit', '--fixedVolume', '"' + fixed_volume + '"', '--transformType', transform_type, '--initializeTransformMode', transform_mode, '--interpolationMode', interpolation_mode, '--samplingPercentage', str(sampling_percentage)]
 
@@ -33,8 +33,10 @@ def BRAINSFit_register(moving_volume, output_filename, fixed_volume, fixed_volum
         print '\n'
         print 'Using 3DSlicer\'s BRAINSFit to register ' + moving_volume + ' to ' + fixed_volume + '...'
         call(' '.join(BRAINSFit_specific_command), shell=True)
+        return output_filename
     except:
         print 'BRAINSFit failed for file ' + moving_volume
+        return []
 
     return
 

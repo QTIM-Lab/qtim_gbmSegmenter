@@ -3,37 +3,40 @@ import glob
 
 from subprocess import call
 
-def resample_slicer(resample_volume, output_filename, dimensions=[1,1,1], interpolation_mode = 'linear'):
+def resample_slicer(input_volumes, output_filenames, dimensions=[1,1,1], interpolation_mode = 'linear'):
 
-	ResampleVolume_base_command = ['Slicer', '--launch', 'ResampleScalarVolume', '-i', interpolation_mode]
+    return_filenames = []
 
-	ResampleVolume_base_command += ['-s', str(dimensions).strip('[]').replace(' ', '')]
+    for idx, input_volume in enumerate(input_volumes):
 
-	ResampleVolume_specific_command = ResampleVolume_base_command + [resample_volume, output_filename]
-	
-	print ' '.join(ResampleVolume_specific_command)
+        ResampleVolume_base_command = ['Slicer', '--launch', 'ResampleScalarVolume', '-i', interpolation_mode]
 
-	try:
-		print '\n'
-		print 'Using 3DSlicer\'s ResampleVolume to resample ' + resample_volume + ' to ' + str(dimensions) + '...'
-		call(' '.join(ResampleVolume_specific_command), shell=True)
-		return output_filename
-	except:
-		print '3DSlicer\'s resample volume failed for file ' + resample_volume
-		return []
+        ResampleVolume_base_command += ['-s', str(dimensions).strip('[]').replace(' ', '')]
 
-	return
+        ResampleVolume_specific_command = ResampleVolume_base_command + [input_volume, output_filenames[idx]]
+        
+        print ' '.join(ResampleVolume_specific_command)
 
-def execute(input_volume, output_filename, specific_function, params):
+        try:
+            print '\n'
+            print 'Using 3DSlicer\'s ResampleVolume to resample ' + input_volume + ' to ' + str(dimensions) + '...'
+            call(' '.join(ResampleVolume_specific_command), shell=True)
+            return_filenames += [output_filenames[idx]]
+        except:
+            print '3DSlicer\'s resample volume failed for file ' + input_volume
 
-	if specific_function == 'slicer_resample':
-		return resample_slicer(*[input_volume, output_filename] + params)
-	else:
-		print 'There is no resampling method associated with this keyword: ' + specific_function + '. Skipping volume located at...' + input_volume
-		return []
+    return return_filenames
+
+def execute(input_volumes, output_filenames, specific_function, params):
+
+    if specific_function == 'slicer_resample':
+        return resample_slicer(*[input_volumes, output_filenames] + params)
+    else:
+        print 'There is no resampling method associated with this keyword: ' + specific_function + '. Skipping volume located at...' + input_volumes
+        return None
 
 def run_test():
-	return
+    return
 
 if __name__ == '__main__':
-	run_test()
+    run_test()

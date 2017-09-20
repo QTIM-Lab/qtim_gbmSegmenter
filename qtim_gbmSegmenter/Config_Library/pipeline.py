@@ -13,6 +13,7 @@ import qtim_gbmSegmenter.PreProcessing_Library.bias_correction as bias_correctio
 import qtim_gbmSegmenter.PreProcessing_Library.resample as resample
 import qtim_gbmSegmenter.PreProcessing_Library.skull_strip as skull_strip
 import qtim_gbmSegmenter.PreProcessing_Library.registration as registration
+import qtim_gbmSegmenter.PreProcessing_Library.segmentation as segmentation
 
 preprocessing_dictionary = {
     'dicom_convert': import_dicom,
@@ -21,7 +22,8 @@ preprocessing_dictionary = {
     'crop': crop,
     'register': registration,
     'skull_strip': skull_strip,
-    'normalize': normalize
+    'normalize': normalize,
+    'segment': segmentation
 }
 
 def grab_files(location_list, file_regex='*', exclusion_regex=''):
@@ -124,25 +126,19 @@ def move_files_unique_folder(input_filepaths, output_base_directory, file_regex=
 
 def execute(preprocess_step, input_files, input_search_phrase, input_exclusion_phrase, output_folder, output_suffix, method, params):
 
-    if preprocess_step in ['dicom_convert']:
-        input_volumes = grab_folders_recursive(input_files, input_search_phrase, input_exclusion_phrase)
-    elif isinstance(input_files, basestring):
+    if isinstance(input_files, basestring):
         input_volumes = grab_files(input_files, input_search_phrase, input_exclusion_phrase)
     else:
         input_volumes = input_files
     
-    output_filenames = []
+    if preprocess_step in ['dicom_convert']:
+        output_filenames = output_folder
+    else:
+        output_filenames = [grab_output_filepath(single_volume, output_folder, output_suffix, make_dir=True) for single_volume in input_volumes]
 
-    for single_volume in input_volumes:
+    return_filenames = preprocessing_dictionary[preprocess_step].execute(input_volumes, output_filenames, method, params)
 
-        if preprocess_step in ['dicom_convert']:
-            output_filename = grab_output_filepath_folder(single_volume, output_folder, output_suffix, make_dir=True)
-        else:
-            output_filename = grab_output_filepath(single_volume, output_folder, output_suffix, make_dir=True)
-
-        output_filenames += [preprocessing_dictionary[preprocess_step].execute(single_volume, output_filename, method, params)]
-
-    return
+    return return_filenames
 
 def run_test():
     return

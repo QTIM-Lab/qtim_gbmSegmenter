@@ -2,63 +2,79 @@ import os
 import fnmatch
 
 from subprocess import call
+from qtim_tools.qtim_utilities.file_util import replace_suffix
+from qtim_tools.qtim_utilities.format_util import convert_input_2_numpy
+from qtim_tools.qtim_preprocessing.image import fill_in_convex_outline
+from qtim_tools.qtim_utilities.nifti_util import save_numpy_2_nifti
+from scipy import misc, ndimage
 
 from qtim_gbmSegmenter.Config_Library.step import PipelineStep
 from qtim_gbmSegmenter.DeepLearningLibrary.models import skull_strip_models, evaluate_model, load_old_model
 
-def skull_strip_fsl(bet_volume, output_filename, output_mask_suffix='_mask', skull_strip_threshold=.5, skull_strip_vertical_gradient=0):
+# def skull_strip_fsl(bet_volume, output_filename, output_mask_suffix='_mask', skull_strip_threshold=.5, skull_strip_vertical_gradient=0):
     
-    # Note - include head radius and center options in the future.
+#     # Note - include head radius and center options in the future.
 
-    bet_base_command = ['fsl4.1-bet2', bet_volume, output_filename, '-f', str(skull_strip_threshold), '-g', str(skull_strip_vertical_gradient), '-m']
+#     bet_base_command = ['fsl4.1-bet2', bet_volume, output_filename, '-f', str(skull_strip_threshold), '-g', str(skull_strip_vertical_gradient), '-m']
 
-    bet_specific_command = bet_base_command
+#     bet_specific_command = bet_base_command
 
-    try:
-        print '\n'
-        print 'Using FSL\'s BET2 (Brain Extraction Tool) to skull-strip ' + bet_volume + ' to output volume ' + output_filename + '...'
-        call(' '.join(bet_specific_command), shell=True)
+#     try:
+#         print '\n'
+#         print 'Using FSL\'s BET2 (Brain Extraction Tool) to skull-strip ' + bet_volume + ' to output volume ' + output_filename + '...'
+#         call(' '.join(bet_specific_command), shell=True)
 
-        no_path = os.path.basename(os.path.normpath(output_filename))
-        file_prefix = str.split(no_path, '.nii')
-        os.rename(output_filename + '_mask.nii.gz', os.path.join(os.path.dirname(output_filename), file_prefix[0] + output_mask_suffix + '.nii.gz'))
+#         no_path = os.path.basename(os.path.normpath(output_filename))
+#         file_prefix = str.split(no_path, '.nii')
+#         os.rename(output_filename + '_mask.nii.gz', os.path.join(os.path.dirname(output_filename), file_prefix[0] + output_mask_suffix + '.nii.gz'))
 
-    except:
-        print 'BET2 skull-stripping failed for file ' + bet_volume
+#     except:
+#         print 'BET2 skull-stripping failed for file ' + bet_volume
 
-    return
+#     return
 
-def skull_strip_deepneuro(input_filename, output_filename, T2_input_modality='*T2*', FLAIR_input_modality='*FLAIR*'):
+def skull_strip_deepneuro(input_volumes, output_filenames, T2_input_modality='*T2*', FLAIR_input_modality='*FLAIR*', output_mask_suffix='_mask'):
 
     model_dict = skull_strip_models()
 
     target_file = None
-    for model_filename, modality_code in [[T2_input_modality, model_dict['T2']], [FLAIR_input_modality, model_dict['FLAIR']]]:
-        if fnmatch.fnmatch(os.path.basename(input_filename), modality_code):
-            target_file = input_filename
+    for modality_code, model_filename in [[FLAIR_input_modality, model_dict['FLAIR']]]:
+        matches = fnmatch.filter(input_volumes, modality_code)
+        if len(matches) == 1:
+            target_file = os.path.abspath(matches[0])
             target_model = model_filename
+            break
 
-    if target_modality is None:
-        print 'No modality matched for skull-stripping file: ', input_filename
-        return
-    
-    input_filename = os.path.abspath(input_filename)
+    if target_file is None:
+        print 'No modality or multiple modalities matched for skull-stripping files: ', input_volumes
+        return None
 
-    try: 
-        evaluate_model(load_old_model(target_model), os.path.abspath(input_filename), os.path.abspath(output_filename), patch_shape=(32,32,32))
-        return output_filename
-    except:
-        print 'DeepNeuro skull-stripping failed for file ' + input_filename
-        return []  
+    output_mask = os.path.join(os.path.dirname(output_filenames[0]), os.path.basename(replace_suffix(target_file, '', output_mask_suffix)))
 
-def execute(input_volume, output_filename, specific_function, params):
+    evaluate_model(load_old_model(target_model), target_file, output_mask, patch_shape=(32,32,32))
+    fill_in_convex_outline(output_mask, output_mask, output_mask)
+
+    return_filenames = [output_mask]
+
+    for idx, input_volume in enumerate(input_volumes):
+
+        label_data = convert_input_2_numpy(output_mask)
+        crop_data = convert_input_2_numpy(input_volume)
+        crop_data[label_data == 0] = 0
+        save_numpy_2_nifti(crop_data, input_volume, output_filenames[idx])
+
+        return_filenames += [output_filenames[idx]]
+
+    return return_filenames
+
+def execute(input_volumes, output_filenames, specific_function, params):
 
     if specific_function == 'fsl_skull_stripping':
-        skull_strip_fsl(*[input_volume, output_filename] + params)
+        skull_strip_fsl(*[input_volumes, output_filenames] + params)
     elif specific_function == 'deepneuro_skull_stripping':
-        skull_strip_deepneuro(*[input_volume, output_filename] + params)
+        return skull_strip_deepneuro(*[input_volumes, output_filenames] + params)
     else:
-        print 'There is no skull-stripping method associated with this keyword: ' + specific_function + '. Skipping volume located at...' + input_volume
+        print 'There is no skull-stripping method associated with this keyword: ' + specific_function + '. Skipping volumes located at...' + input_volumes
 
 def run_test():
     return

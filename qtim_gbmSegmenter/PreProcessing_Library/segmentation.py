@@ -4,37 +4,35 @@ import fnmatch
 from subprocess import call
 
 from qtim_gbmSegmenter.Config_Library.step import PipelineStep
-from qtim_gbmSegmenter.DeepLearningLibrary.models import skull_strip_models, evaluate_model
+from qtim_gbmSegmenter.DeepLearningLibrary.models import skull_strip_models, evaluate_model, segmentation_models, load_old_model
 
-def segment_deepneuro(input_filename, output_filename, modality_dict):
+def segment_deepneuro(input_volumes, output_filenames, modality_dict, output_segmentation_name):
 
-    model_dict = skull_strip_models()
+    model_dict = segmentation_models()
+    input_filenames = []
 
-    target_file = None
-    for model_filename, modality_code in [[T2_input_modality, model_dict['T2']], [FLAIR_input_modality, model_dict['FLAIR']]]:
-        if fnmatch.fnmatch(os.path.basename(input_filename), modality_code):
-            target_file = input_filename
-            target_model = model_filename
+    for modality_code in ['FLAIR', 'T2', 'T1POST', 'T1PRE']:
+        matches = fnmatch.filter(input_volumes, modality_dict[modality_code])
+        if len(matches) == 1:
+            input_filenames += [os.path.abspath(matches[0])]
 
-    if target_modality is None:
-        print 'No modality matched for skull-stripping file: ', input_filename
-        return
-    
-    input_filename = os.path.abspath(input_filename)
+    output_filename = os.path.join(os.path.dirname(output_filenames[0]), output_segmentation_name + '.nii.gz')
 
-    try: 
-        evaluate_model(load_old_model(target_model), os.path.abspath(input_filename), os.path.abspath(output_filename), patch_shape=(32,32,32))
-        return output_filename
-    except:
-        print 'DeepNeuro skull-stripping failed for file ' + input_filename
-        return []
+    print input_filenames
 
-def execute(input_volume, output_filename, specific_function, params):
+# try: 
+    evaluate_model(load_old_model(model_dict['wholetumor']), input_filenames, os.path.abspath(output_filename), patch_shape=(32,32,32))
+    return output_filename
+    # except:
+    #     print 'DeepNeuro skull-stripping failed for file ' + input_filename
+    #     return []
+
+def execute(input_volumes, output_filenames, specific_function, params):
 
     if specific_function == 'deepneuro_segment':
-        segment_deepneuro(*[input_volume, output_filename] + params)
+        segment_deepneuro(*[input_volumes, output_filenames] + params)
     else:
-        print 'There is no segmentation method associated with this keyword: ' + specific_function + '. Skipping volume located at...' + input_volume
+        print 'There is no segmentation method associated with this keyword: ' + specific_function + '. Skipping volumes located at...' + input_volumes
 
 def run_test():
     return

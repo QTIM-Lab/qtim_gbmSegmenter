@@ -139,17 +139,7 @@ RUN apt-get install graphviz -y
 RUN pip install pydot==1.1.0
 RUN pip install pandas --upgrade 
 RUN pip install numexpr --upgrade
-
-# Install qtim_gbmSegmenter
-RUN pip install qtim_tools nibabel pydicom
-
-# Install NeuroDebian
-# RUN wget -O- http://neuro.debian.net/lists/jessie.us-ca.full | sudo tee /etc/apt/sources.list.d/neurodebian.sources.list && \
-#  apt-key adv --recv-keys --keyserver hkp://pgp.mit.edu:80 0xA5D32F012649A5A9 && \
-#  apt-get update
-
-# Install FSL with NeuroDebian
-# RUN sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes fsl-5.0-complete
+RUN pip install nibabel pydicom
 
 # Install Slicer
  RUN SLICER_URL="http://download.slicer.org/bitstream/561384" && \
@@ -163,32 +153,23 @@ RUN wget "https://github.com/stnava/ANTs/releases/download/v2.1.0/Linux_Debian_j
   tar -C /usr/local -xjf Linux_Debian_jessie_x64.tar.bz2 && \
   rm Linux_Debian_jessie_x64.tar.bz2
 
-# Install FreeSurfer
-#RUN bash && \
-#  wget ftp://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/6.0.0/freesurfer-Linux-centos6_x86_64-stable-pub-v6.0.0.tar.gz && \
-#  tar -C /usr/local -xzvf freesurfer-Linux-centos6_x86_64-stable-pub-v6.0.0.tar.gz && \
-#  rm freesurfer-Linux-centos6_x86_64-stable-pub-v6.0.0.tar.gz
-
 # Environmental Variables
-# ENV FSLDIR /usr/share/fsl/5.0
-# ENV FREESURFER_HOME /usr/local/freesurfer 
 ENV PATH "$PATH:/opt/slicer"
-# ENV PATH "$PATH:${FSLDIR}/bin"
-# ENV PATH "$PATH:/usr/local/debian_jessie"
 
 # Pull git repository for qtim_gbmSegmenter
+RUN echo hello
 RUN git clone https://github.com/QTIM-Lab/qtim_gbmSegmenter /home/qtim_gbmSegmenter
+RUN git clone https://github.com/QTIM-Lab/qtim_tools /home/qtim_tools
 
-# FreeSurfer License
-# RUN mv /home/qtim_gbmSegmenter/PreProcessing_Library/Scripts/FreeSurfer_Resources/license.txt /usr/local/freesurfer
+WORKDIR /home/qtim_tools
+RUN python /home/qtim_tools/setup.py install
 
-# Startup Scripts
-RUN echo "source $FREESURFER_HOME/SetUpFreeSurfer.sh" >> ~/.bashrc
-RUN echo "source ${FSLDIR}/etc/fslconf/fsl.sh" >> ~/.bashrc
+WORKDIR /home/qtim_gbmSegmenter
+RUN python /home/qtim_gbmSegmenter/setup.py install
 
 # Commands at startup.
 # ENTRYPOINT /bin/bash
 # CMD /bin/bash -c "source /root/.bashrc && cd /home/data && python pipeline_script.py"
 
-WORKDIR "/root"
+WORKDIR "/"
 CMD ["/bin/bash"]

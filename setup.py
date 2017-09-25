@@ -14,6 +14,9 @@ setup(
   version = '0.1.1',
   description = 'Test',
   packages = find_packages(),
+  entry_points =  {
+                  "console_scripts": ['segment = qtim_gbmSegmenter.__main__:main'], 
+                  },
   author = 'Andrew Beers',
   author_email = 'abeers@mgh.harvard.edu',
   url = 'https://github.com/QTIM-Lab/qtim_gbmSegmenter', # use the URL to the github repo

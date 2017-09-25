@@ -126,17 +126,18 @@ def move_files_unique_folder(input_filepaths, output_base_directory, file_regex=
 
 def execute(preprocess_step, input_files, input_search_phrase, input_exclusion_phrase, output_folder, output_suffix, method, params):
 
-    if isinstance(input_files, basestring):
-        input_volumes = grab_files(input_files, input_search_phrase, input_exclusion_phrase)
-    else:
-        input_volumes = input_files
-    
+    output_filenames = {}
+
     if preprocess_step in ['dicom_convert']:
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
         output_filenames = output_folder
     else:
-        output_filenames = [grab_output_filepath(single_volume, output_folder, output_suffix, make_dir=True) for single_volume in input_volumes]
+        for key in input_files:
+            output_filenames[key] = os.path.abspath(grab_output_filepath(input_files[key], output_folder, output_suffix, make_dir=True))
+            input_files[key] = os.path.abspath(input_files[key])
 
-    return_filenames = preprocessing_dictionary[preprocess_step].execute(input_volumes, output_filenames, method, params)
+    return_filenames = preprocessing_dictionary[preprocess_step].execute(input_files, output_filenames, method, params)
 
     return return_filenames
 

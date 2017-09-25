@@ -6,23 +6,30 @@ from subprocess import call
 from qtim_gbmSegmenter.Config_Library.step import PipelineStep
 from qtim_gbmSegmenter.DeepLearningLibrary.models import skull_strip_models, evaluate_model, segmentation_models, load_old_model
 
-def segment_deepneuro(input_volumes, output_filenames, modality_dict, output_segmentation_name):
+def segment_deepneuro(input_volumes, output_filenames, output_wholetumor_name, output_enhancing_name):
 
     model_dict = segmentation_models()
-    input_filenames = []
+    wholetumor_input_filenames, enhancingtumor_input_filenames = [], []
+    return_filenames = input_volumes
 
-    for modality_code in ['FLAIR', 'T2', 'T1POST', 'T1PRE']:
-        matches = fnmatch.filter(input_volumes, modality_dict[modality_code])
-        if len(matches) == 1:
-            input_filenames += [os.path.abspath(matches[0])]
+    for modality_code in ['FLAIR', 'T2', 'T1POST', 'T1']:
+        wholetumor_input_filenames += [input_volumes[modality_code]]
+    for modality_code in ['FLAIR', 'T2', 'T1', 'T1POST']:
+        enhancingtumor_input_filenames += [input_volumes[modality_code]]
 
-    output_filename = os.path.join(os.path.dirname(output_filenames[0]), output_segmentation_name + '.nii.gz')
+    output_wholetumor = os.path.join(os.path.dirname(output_filenames['T2']), output_wholetumor_name + '-label.nii.gz')
+    output_enhancing = os.path.join(os.path.dirname(output_filenames['T2']), output_enhancing_name + '-label.nii.gz')
 
-    print input_filenames
+    # try:
 
-# try: 
-    evaluate_model(load_old_model(model_dict['wholetumor']), input_filenames, os.path.abspath(output_filename), patch_shape=(32,32,32))
-    return output_filename
+    evaluate_model(load_old_model(model_dict['wholetumor']), wholetumor_input_filenames, os.path.abspath(output_wholetumor), patch_shape=(32,32,32))
+    return_filenames['wholetumor'] = output_wholetumor
+
+    evaluate_model(load_old_model(model_dict['enhancingtumor']), enhancingtumor_input_filenames + [output_wholetumor], os.path.abspath(output_enhancing), patch_shape=(32,32,32))
+    return_filenames['enhancingtumor'] = output_enhancing
+
+    return return_filenames
+
     # except:
     #     print 'DeepNeuro skull-stripping failed for file ' + input_filename
     #     return []

@@ -56,15 +56,27 @@ from qtim_tools.qtim_utilities.dicom_util import dcm_2_numpy, dcm_2_nifti
 
 #     return
 
-def python_convert(dicom_folders, output_directory, output_suffix=''):
+def python_convert(dicom_folders, output_directory, output_suffix='', T2_folder=None, T1_folder=None, T1POST_folder=None, FLAIR_folder=None, use_series_descriptions=None, T2_contains=None, T1_contains=None, T1POST_contains=None, FLAIR_contains=None):
 
-    return_filenames = []
+    return_filenames = {}
+    modality_keys = ['T2', 'T1', 'T1POST', 'FLAIR']
 
-    print output_directory
+    if not use_series_descriptions:
 
-    for folder in dicom_folders:
+        for idx, folder in enumerate([T2_folder, T1_folder, T1POST_folder, FLAIR_folder]):
 
-        return_filenames += dcm_2_nifti(folder, output_directory, suffix=output_suffix)
+            print folder, output_directory
+
+            return_filenames[modality_keys[idx]] = os.path.abspath(dcm_2_nifti(folder, output_directory, suffix=output_suffix)[0])
+
+    else:
+
+        output_filenames = dcm_2_nifti(folder, output_directory, suffix=output_suffix)
+
+        for idx, folder in enumerate([T2_contains, T1_contains, T1POST_contains, FLAIR_contains]):
+            for file in output_filenames:
+                if fnmatch.fnmatch(file, regex):
+                    return_filenames[modality_keys[idx]] = os.path.abspath(file)
 
     return return_filenames
 

@@ -33,37 +33,29 @@ from qtim_gbmSegmenter.DeepLearningLibrary.models import skull_strip_models, eva
 
 #     return
 
-def skull_strip_deepneuro(input_volumes, output_filenames, T2_input_modality='*T2*', FLAIR_input_modality='*FLAIR*', output_mask_suffix='_mask'):
+def skull_strip_deepneuro(input_volumes, output_filenames, output_mask_suffix='_mask'):
 
     model_dict = skull_strip_models()
 
-    target_file = None
-    for modality_code, model_filename in [[FLAIR_input_modality, model_dict['FLAIR']]]:
-        matches = fnmatch.filter(input_volumes, modality_code)
-        if len(matches) == 1:
-            target_file = os.path.abspath(matches[0])
-            target_model = model_filename
-            break
+    target_model = model_dict['FLAIR']
+    target_file = input_volumes['FLAIR']
 
-    if target_file is None:
-        print 'No modality or multiple modalities matched for skull-stripping files: ', input_volumes
-        return None
-
-    output_mask = os.path.join(os.path.dirname(output_filenames[0]), os.path.basename(replace_suffix(target_file, '', output_mask_suffix)))
-
+    output_mask = os.path.join(os.path.dirname(target_file), os.path.basename(replace_suffix(target_file, '', output_mask_suffix)))
+    
     evaluate_model(load_old_model(target_model), target_file, output_mask, patch_shape=(32,32,32))
     fill_in_convex_outline(output_mask, output_mask, output_mask)
 
-    return_filenames = [output_mask]
+    return_filenames = {}
+    return_filenames['mask'] = output_mask
 
-    for idx, input_volume in enumerate(input_volumes):
+    for key, input_volume in input_volumes.iteritems():
 
         label_data = convert_input_2_numpy(output_mask)
         crop_data = convert_input_2_numpy(input_volume)
         crop_data[label_data == 0] = 0
-        save_numpy_2_nifti(crop_data, input_volume, output_filenames[idx])
+        save_numpy_2_nifti(crop_data, input_volume, output_filenames[key])
 
-        return_filenames += [output_filenames[idx]]
+        return_filenames[key] = output_filenames[key]
 
     return return_filenames
 

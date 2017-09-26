@@ -108,35 +108,19 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     # # # #--------------------------------------------------------------------#
 
     # # # #--------------------------------------------------------------------#
-    # # # Normalizing Step
-    # # # Available methods: 'zeromean_normalize'
-
-    if not no_ss:
-        output_folder = './INPUT_DATA/NORMALIZED_NIFTI'
-        output_suffix = '_normalized'
-
-        method = 'zeromean_normalize'
-
-        extra_parameters = []
-
-        output = pipeline.execute('normalize', output, None, None, output_folder, output_suffix, method, extra_parameters)
-
-    # # #--------------------------------------------------------------------#
-
-    # # # #--------------------------------------------------------------------#
     # # # Skull-Stripping Step
     # # # Available methods: 'deepneuro_skull_stripping'
 
-    if not no_ss:
-        output_folder = './INPUT_DATA/SKULLSTRIP_NIFTI'
-        output_suffix = '_ss'
+    # if not no_ss:
+    #     output_folder = './INPUT_DATA/SKULLSTRIP_NIFTI'
+    #     output_suffix = '_ss'
 
-        method = 'deepneuro_skull_stripping'
+    #     method = 'deepneuro_skull_stripping'
 
-        output_mask_suffix = '_mask'
-        extra_parameters = [output_mask_suffix]
+    #     output_mask_suffix = '_mask'
+    #     extra_parameters = [output_mask_suffix]
 
-        output = pipeline.execute('skull_strip', output, None, None, output_folder, output_suffix, method, extra_parameters)
+    #     output = pipeline.execute('skull_strip', output, None, None, output_folder, output_suffix, method, extra_parameters)
 
     # # # # #--------------------------------------------------------------------#
 

@@ -2,7 +2,7 @@ import sys
 import os
 import glob
 
-def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_output_folder, nobias, niftis):
+def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_output_folder, niftis, nobias, preprocessed, no_ss, keep_outputs):
 
     #--------------------------------------------------------------------#
     # Global settings
@@ -55,7 +55,7 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     # Bias Correction Step
     # Available methods: 'ants_n4_bias'
 
-    if not nobias:
+    if not nobias and not preprocessed:
 
         output_folder = './INPUT_DATA/BIAS_CORRECTED_NIFTI'
         output_suffix = '_nobias'
@@ -72,16 +72,17 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     # Resampling Step
     # Available methods: 'slicer_resample'
 
-    output_folder = './INPUT_DATA/ISOTROPIC_NIFTI'
-    output_suffix = '_isotropic'
+    if not preprocessed:
+        output_folder = './INPUT_DATA/ISOTROPIC_NIFTI'
+        output_suffix = '_isotropic'
 
-    method = 'slicer_resample'
+        method = 'slicer_resample'
 
-    dimensions = [1,1,1]
-    interpolation_mode = 'linear'
-    extra_parameters = [dimensions, interpolation_mode]
+        dimensions = [1,1,1]
+        interpolation_mode = 'linear'
+        extra_parameters = [dimensions, interpolation_mode]
 
-    output = pipeline.execute('resample', output, None, None, output_folder, output_suffix, method, extra_parameters)
+        output = pipeline.execute('resample', output, None, None, output_folder, output_suffix, method, extra_parameters)
 
     # #--------------------------------------------------------------------#
 
@@ -89,19 +90,20 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     # # Registration Step
     # # Available methods: 'slicer_registration'
 
-    output_folder = final_output_folder
-    output_suffix = '_reg'
+    if not preprocessed:
+        output_folder = final_output_folder
+        output_suffix = '_reg'
 
-    method = 'slicer_registration'
+        method = 'slicer_registration'
 
-    fixed_volume = 'T2'
-    transform_type = 'Rigid,ScaleVersor3D,ScaleSkewVersor3D,Affine'
-    transform_mode = 'useMomentsAlign'
-    interpolation_mode = 'Linear'
-    sampling_percentage = .002
-    extra_parameters = [fixed_volume, transform_type, transform_mode, interpolation_mode, sampling_percentage]
+        fixed_volume = 'T2'
+        transform_type = 'Rigid,ScaleVersor3D,ScaleSkewVersor3D,Affine'
+        transform_mode = 'useMomentsAlign'
+        interpolation_mode = 'Linear'
+        sampling_percentage = .002
+        extra_parameters = [fixed_volume, transform_type, transform_mode, interpolation_mode, sampling_percentage]
 
-    output = pipeline.execute('register', output, None, None, output_folder, output_suffix, method, extra_parameters)
+        output = pipeline.execute('register', output, None, None, output_folder, output_suffix, method, extra_parameters)
 
     # # # #--------------------------------------------------------------------#
 
@@ -109,15 +111,16 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     # # # Skull-Stripping Step
     # # # Available methods: 'deepneuro_skull_stripping'
 
-    output_folder = './INPUT_DATA/SKULLSTRIP_NIFTI'
-    output_suffix = '_ss'
+    if not no_ss:
+        output_folder = './INPUT_DATA/SKULLSTRIP_NIFTI'
+        output_suffix = '_ss'
 
-    method = 'deepneuro_skull_stripping'
+        method = 'deepneuro_skull_stripping'
 
-    output_mask_suffix = '_mask'
-    extra_parameters = [output_mask_suffix]
+        output_mask_suffix = '_mask'
+        extra_parameters = [output_mask_suffix]
 
-    output = pipeline.execute('skull_strip', output, None, None, output_folder, output_suffix, method, extra_parameters)
+        output = pipeline.execute('skull_strip', output, None, None, output_folder, output_suffix, method, extra_parameters)
 
     # # # # #--------------------------------------------------------------------#
 
@@ -125,14 +128,15 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     # # # Normalizing Step
     # # # Available methods: 'zeromean_normalize'
 
-    output_folder = './INPUT_DATA/NORMALIZED_NIFTI'
-    output_suffix = '_normalized'
+    if not no_ss:
+        output_folder = './INPUT_DATA/NORMALIZED_NIFTI'
+        output_suffix = '_normalized'
 
-    method = 'zeromean_normalize'
+        method = 'zeromean_normalize'
 
-    extra_parameters = []
+        extra_parameters = []
 
-    output = pipeline.execute('normalize', output, None, None, output_folder, output_suffix, method, extra_parameters)
+        output = pipeline.execute('normalize', output, None, None, output_folder, output_suffix, method, extra_parameters)
 
     # # #--------------------------------------------------------------------#
 
@@ -153,7 +157,8 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
 
     # #--------------------------------------------------------------------#
 
-    pipeline.clear_directories(['./INPUT_DATA/RAW_NIFTI', './INPUT_DATA/BIAS_CORRECTED_NIFTI', './INPUT_DATA/ISOTROPIC_NIFTI', './INPUT_DATA/SKULLSTRIP_NIFTI', './INPUT_DATA/NORMALIZED_NIFTI'])
+    if not keep_outputs:
+        pipeline.clear_directories(['./INPUT_DATA/RAW_NIFTI', './INPUT_DATA/BIAS_CORRECTED_NIFTI', './INPUT_DATA/ISOTROPIC_NIFTI', './INPUT_DATA/SKULLSTRIP_NIFTI', './INPUT_DATA/NORMALIZED_NIFTI'])
 
     return
 

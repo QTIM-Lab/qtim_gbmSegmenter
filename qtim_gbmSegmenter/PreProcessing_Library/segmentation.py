@@ -11,11 +11,15 @@ def segment_deepneuro(input_volumes, output_filenames, output_wholetumor_name, o
     wholetumor_input_filenames, enhancingtumor_input_filenames = [], []
     return_filenames = input_volumes
 
-    for modality_code in ['FLAIR', 'T2', 'T1POST', 'T1']:
-        wholetumor_input_filenames += [input_volumes[modality_code]]
-    for modality_code in ['FLAIR', 'T2', 'T1', 'T1POST']:
-        enhancingtumor_input_filenames += [input_volumes[modality_code]]
+    # for modality_code in ['FLAIR', 'T2', 'T1POST', 'T1']:
+    #     wholetumor_input_filenames += [input_volumes[modality_code]]
+    # for modality_code in ['FLAIR', 'T2', 'T1', 'T1POST']:
+    #     enhancingtumor_input_filenames += [input_volumes[modality_code]]
 
+    for modality_code in ['FLAIR', 'T1', 'T1POST']:
+        enhancingtumor_input_filenames += [input_volumes[modality_code]]
+        wholetumor_input_filenames += [input_volumes[modality_code]]
+        
     output_wholetumor = os.path.join(os.path.dirname(output_filenames['T2']), output_wholetumor_name + '-label.nii.gz')
     output_enhancing = os.path.join(os.path.dirname(output_filenames['T2']), output_enhancing_name + '-label.nii.gz')
 

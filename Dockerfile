@@ -153,12 +153,25 @@ RUN wget "https://github.com/stnava/ANTs/releases/download/v2.1.0/Linux_Ubuntu14
   tar -C /usr/local -xjf Linux_Ubuntu14.04.tar.bz2 && \
   rm Linux_Ubuntu14.04.tar.bz2
 
+# Install NeuroDebian
+# RUN wget -O- http://neuro.debian.net/lists/jessie.us-ca.full | sudo tee /etc/apt/sources.list.d/neurodebian.sources.list && \
+#   apt-key adv --recv-keys --keyserver hkp://pgp.mit.edu:80 0xA5D32F012649A5A9 && \
+#   apt-get update
+
+# # Install FSL with NeuroDebian
+# RUN sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes fsl-5.0-complete
+
 # Environmental Variables
 ENV PATH "$PATH:/opt/slicer"
 ENV PATH "$PATH:/usr/local/ANTs.2.1.0.Debian-Ubuntu_X64"
+# ENV FSLDIR /usr/share/fsl/5.0
+
+# Setup Scripts
+# RUN echo "source $FREESURFER_HOME/SetUpFreeSurfer.sh" >> ~/.bashrc
+# RUN echo "source ${FSLDIR}/etc/fslconf/fsl.sh" >> ~/.bashrc
 
 # Pull git repository for qtim_gbmSegmenter
-RUN echo checkpoint2
+RUN echo checkpoint3
 RUN git clone https://github.com/QTIM-Lab/qtim_gbmSegmenter /home/qtim_gbmSegmenter
 RUN git clone https://github.com/QTIM-Lab/qtim_tools /home/qtim_tools
 
@@ -172,8 +185,9 @@ RUN python /home/qtim_gbmSegmenter/setup.py develop
 # Copy in models
 RUN mkdir /home/qtim_gbmSegmenter/qtim_gbmSegmenter/DeepLearningLibrary/model_data
 RUN wget -O /home/qtim_gbmSegmenter/qtim_gbmSegmenter/DeepLearningLibrary/model_data/FLAIR_ss.h5 "https://www.dropbox.com/s/lckmz8ptihxamtp/FLAIR_ss.h5?dl=1"
-RUN wget -O /home/qtim_gbmSegmenter/qtim_gbmSegmenter/DeepLearningLibrary/model_data/enhancingtumor.h5 "https://www.dropbox.com/s/4e1c05j36zevj6x/enhancingtumor.h5?dl=1"
-RUN wget -O /home/qtim_gbmSegmenter/qtim_gbmSegmenter/DeepLearningLibrary/model_data/wholetumor.h5 "https://www.dropbox.com/s/74tjx14ue11rc0q/wholetumor.h5?dl=1"
+RUN wget -O /home/qtim_gbmSegmenter/qtim_gbmSegmenter/DeepLearningLibrary/model_data/enhancingtumor.h5 "https://www.dropbox.com/s/8ucsrzypti958j0/enhancingtumor_noT2.h5?dl=1"
+RUN wget -O /home/qtim_gbmSegmenter/qtim_gbmSegmenter/DeepLearningLibrary/model_data/wholetumor.h5 "https://www.dropbox.com/s/s5sn7yk8znpmax4/wholetumor_noT2.h5?dl=1"
 
+# Commands at startup.
 WORKDIR "/"
-CMD ["/bin/bash"]
+# CMD /bin/bash -c "source /root/.bashrc"

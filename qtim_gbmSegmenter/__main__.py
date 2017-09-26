@@ -32,8 +32,10 @@ The following commands are available:
             description='''segment pipeline <T2> <T1pre> <T1post> <FLAIR> <output_folder> [-nobias -niftis]
 
             Segment an image from DICOMs with all preprocessing steps included.
-            -nobias     Skip the bias correction step.
-            -niftis     Input nifti files instead of DIOCM folders.
+            -niftis             Input nifti files instead of DIOCM folders.
+            -nobias             Skip the bias correction step.
+            -preprocessed       Skip bias correction, resampling, and registration.
+            -mask [file]        Provide a skull-stripping mask. If provided, no skull-stripping will be performed.
                 ''')
 
         parser.add_argument('T2', type=str)
@@ -41,13 +43,16 @@ The following commands are available:
         parser.add_argument('T1POST', type=str)
         parser.add_argument('FLAIR', type=str)
         parser.add_argument('output', type=str)
+        parser.add_argument('-niftis', action='store_true')  
         parser.add_argument('-nobias', action='store_true')
-        parser.add_argument('-niftis', action='store_true')    
+        parser.add_argument('-preprocessed', action='store_true')
+        parser.add_argument('-no_ss', action='store_true') 
+        parser.add_argument('-keep_outputs', action='store_true') 
 
         args = parser.parse_args(sys.argv[2:])
         print 'Beginning segmentation pipeline...'
 
-        full_pipeline(args.T2, args.T1, args.T1POST, args.FLAIR, args.output, args.nobias, args.niftis)
+        full_pipeline(args.T2, args.T1, args.T1POST, args.FLAIR, args.output, args.niftis, args.nobias, args.preprocessed, args.no_ss, args.keep_outputs)
 
     def dicom_2_nifti(self):
         parser = argparse.ArgumentParser(

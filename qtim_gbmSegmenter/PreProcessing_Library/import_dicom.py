@@ -56,31 +56,35 @@ from qtim_tools.qtim_utilities.dicom_util import dcm_2_numpy, dcm_2_nifti
 
 #     return
 
-def python_convert(dicom_folders, output_directory, output_suffix='', T2_folder=None, T1_folder=None, T1POST_folder=None, FLAIR_folder=None, use_series_descriptions=None, T2_contains=None, T1_contains=None, T1POST_contains=None, FLAIR_contains=None):
+def python_convert(dicom_folder, output_directory, output_suffix='', T2_folder=None, T1_folder=None, T1POST_folder=None, FLAIR_folder=None, use_series_descriptions=None, T2_contains=None, T1_contains=None, T1POST_contains=None, FLAIR_contains=None):
 
-    return_filenames = {}
-    modality_keys = ['T2', 'T1', 'T1POST', 'FLAIR']
+    if dicom_folder is not None:
 
-    if not use_series_descriptions:
-
-        for idx, folder in enumerate([T2_folder, T1_folder, T1POST_folder, FLAIR_folder]):
-
-            print folder, output_directory
-
-            return_filenames[modality_keys[idx]] = os.path.abspath(dcm_2_nifti(folder, output_directory, suffix=output_suffix)[0])
+        dcm_2_nifti(dicom_folder, output_directory, suffix=output_suffix)
 
     else:
 
-        output_filenames = dcm_2_nifti(folder, output_directory, suffix=output_suffix)
+        return_filenames = {}
+        modality_keys = ['T2', 'T1', 'T1POST', 'FLAIR']
 
-        for idx, folder in enumerate([T2_contains, T1_contains, T1POST_contains, FLAIR_contains]):
-            for file in output_filenames:
-                if fnmatch.fnmatch(file, regex):
-                    return_filenames[modality_keys[idx]] = os.path.abspath(file)
+        if not use_series_descriptions:
 
-    return return_filenames
+            for idx, folder in enumerate([T2_folder, T1_folder, T1POST_folder, FLAIR_folder]):
 
-    pass
+                print folder, output_directory
+
+                return_filenames[modality_keys[idx]] = os.path.abspath(dcm_2_nifti(folder, output_directory, suffix=output_suffix)[0])
+
+        else:
+
+            output_filenames = dcm_2_nifti(folder, output_directory, suffix=output_suffix)
+
+            for idx, folder in enumerate([T2_contains, T1_contains, T1POST_contains, FLAIR_contains]):
+                for file in output_filenames:
+                    if fnmatch.fnmatch(file, regex):
+                        return_filenames[modality_keys[idx]] = os.path.abspath(file)
+
+        return return_filenames
 
 def execute(input_volumes, output_filenames, specific_function, params):
 

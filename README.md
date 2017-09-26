@@ -1,4 +1,4 @@
-# qtim_PreProcessor
+# qtim_gbmSegmenter
 This page contains a Docker container and full code/resources for pre-processing medical imaging data at the Quantitative Tumor Imaging Lab at the Martinos Center (MIT/HST). It aggregates pre-processing steps from 3D Slicer, FreeSurfer, ANTs, and FSL, as well as hard-coded steps written in Python with help from the python package nibabel. Currently, it takes in DICOM files and outputs NIFTI files.
 
 # Usage

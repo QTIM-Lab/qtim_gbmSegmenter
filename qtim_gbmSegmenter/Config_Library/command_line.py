@@ -1,4 +1,4 @@
-def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_output_folder):
+def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_output_folder, nobias, niftis):
 
     #--------------------------------------------------------------------#
     # Global settings
@@ -27,14 +27,20 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     # DICOM Conversion Step
     # Available methods: 'python_convert'
 
-    output_folder = './INPUT_DATA/RAW_NIFTI'
+    if not niftis:
 
-    method = 'python_convert'
+        output_folder = './INPUT_DATA/RAW_NIFTI'
 
-    output_suffix = ''
-    extra_parameters = [output_suffix, T2_folder, T1_folder, T1POST_folder, FLAIR_folder]
+        method = 'python_convert'
 
-    output = pipeline.execute('dicom_convert', None, None, None, output_folder, output_suffix, method, extra_parameters)
+        output_suffix = ''
+        extra_parameters = [output_suffix, T2_folder, T1_folder, T1POST_folder, FLAIR_folder]
+
+        output = pipeline.execute('dicom_convert', None, None, None, output_folder, output_suffix, method, extra_parameters)
+
+    else:
+
+        output = {'T2': T2_folder, 'T1': T1_folder, 'T1POST': T1POST_folder, 'FLAIR': FLAIR_folder}
 
     # #--------------------------------------------------------------------#
 
@@ -48,14 +54,16 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     # Bias Correction Step
     # Available methods: 'ants_n4_bias'
 
-    output_folder = './INPUT_DATA/BIAS_CORRECTED_NIFTI'
-    output_suffix = '_nobias'
+    if not nobias:
 
-    method = 'ants_n4_bias'
+        output_folder = './INPUT_DATA/BIAS_CORRECTED_NIFTI'
+        output_suffix = '_nobias'
 
-    extra_parameters = []
+        method = 'ants_n4_bias'
 
-    output = pipeline.execute('bias_correct', output, None, None, output_folder, output_suffix, method, extra_parameters)
+        extra_parameters = []
+
+        output = pipeline.execute('bias_correct', output, None, None, output_folder, output_suffix, method, extra_parameters)
 
     # # #--------------------------------------------------------------------#
 
@@ -145,6 +153,22 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     # #--------------------------------------------------------------------#
 
     pipeline.clear_directories(['./INPUT_DATA/RAW_NIFTI', './INPUT_DATA/BIAS_CORRECTED_NIFTI', './INPUT_DATA/ISOTROPIC_NIFTI', './INPUT_DATA/SKULLSTRIP_NIFTI', './INPUT_DATA/NORMALIZED_NIFTI'])
+
+    return
+
+def dicom_convert(input_folder, output_folder):
+
+    output_folder = os.path.join('./INPUT_DATA', output_folder)
+    input_folder = os.path.join('/INPUT_DATA', input_folder)
+
+    method = 'python_convert'
+
+    output_suffix = ''
+    extra_parameters = [output_suffix]
+
+    output = pipeline.execute('dicom_convert', input_folder, None, None, output_folder, output_suffix, method, extra_parameters)
+
+    return
 
 if __name__ == '__main__':
     pass

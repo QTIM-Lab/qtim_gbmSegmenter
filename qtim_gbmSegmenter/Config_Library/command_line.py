@@ -1,3 +1,7 @@
+import sys
+import os
+import glob
+
 def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_output_folder, nobias, niftis):
 
     #--------------------------------------------------------------------#
@@ -8,9 +12,6 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
 
     #--------------------------------------------------------------------#
     # Never change this portion, required for functioning in Docker container.
-    import sys
-    import os
-    import glob
     sys.path.append("..")
     os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"   # see issue #152
     os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_num)
@@ -157,6 +158,8 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     return
 
 def dicom_convert(input_folder, output_folder):
+
+    import qtim_gbmSegmenter.Config_Library.pipeline as pipeline
 
     output_folder = os.path.join('./INPUT_DATA', output_folder)
     input_folder = os.path.join('/INPUT_DATA', input_folder)

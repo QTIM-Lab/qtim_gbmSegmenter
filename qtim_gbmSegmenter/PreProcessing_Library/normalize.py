@@ -11,7 +11,11 @@ from qtim_tools.qtim_utilities.nifti_util import save_numpy_2_nifti
 def normalize_zeromean_unitvariance(input_volumes, output_filenames):
 
     return_filenames = {}
-    label_volume = input_volumes['mask']
+
+    if 'mask' in input_volumes.keys():
+        label_volume = input_volumes['mask']
+    else:
+        label_volume = None
 
     for key, input_volume in input_volumes.iteritems():
 
@@ -21,7 +25,7 @@ def normalize_zeromean_unitvariance(input_volumes, output_filenames):
         # try:
         print 'Using python\'s Nibabel and Numpy packages to normalize intensities within a region of interest to zero mean and unit variance on volume ' + input_volume + ' to output volume ' + output_filenames[key] + '...'
 
-        if 'mask' in input_voles.keys():
+        if label_volume is not None:
             normalize_numpy = convert_input_2_numpy(input_volume)
             ROI_numpy = convert_input_2_numpy(label_volume)
             vol_mean = np.mean(normalize_numpy[ROI_numpy > 0])

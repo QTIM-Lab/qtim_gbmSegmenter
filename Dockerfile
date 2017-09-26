@@ -178,16 +178,17 @@ WORKDIR /home/qtim_tools
 RUN python /home/qtim_tools/setup.py develop
 
 # Copy in models
-RUN mkdir /home/qtim_gbmSegmenter/qtim_gbmSegmenter/DeepLearningLibrary/model_data
-RUN wget -O /home/qtim_gbmSegmenter/qtim_gbmSegmenter/DeepLearningLibrary/model_data/FLAIR_ss.h5 "https://www.dropbox.com/s/lckmz8ptihxamtp/FLAIR_ss.h5?dl=1"
-RUN wget -O /home/qtim_gbmSegmenter/qtim_gbmSegmenter/DeepLearningLibrary/model_data/enhancingtumor.h5 "https://www.dropbox.com/s/8ucsrzypti958j0/enhancingtumor_noT2.h5?dl=1"
-RUN wget -O /home/qtim_gbmSegmenter/qtim_gbmSegmenter/DeepLearningLibrary/model_data/wholetumor.h5 "https://www.dropbox.com/s/s5sn7yk8znpmax4/wholetumor_noT2.h5?dl=1"
+RUN mkdir -p /home/models
+RUN wget -O /home/models/FLAIR_ss.h5 "https://www.dropbox.com/s/lckmz8ptihxamtp/FLAIR_ss.h5?dl=1"
+RUN wget -O /home/models/enhancingtumor.h5 "https://www.dropbox.com/s/8ucsrzypti958j0/enhancingtumor_noT2.h5?dl=1"
+RUN wget -O /home/models/wholetumor.h5 "https://www.dropbox.com/s/s5sn7yk8znpmax4/wholetumor_noT2.h5?dl=1"
 
-RUN echo checkpoint2
+RUN echo checkpoint3
 
 RUN git clone https://github.com/QTIM-Lab/qtim_gbmSegmenter /home/qtim_gbmSegmenter
 WORKDIR /home/qtim_gbmSegmenter
 RUN python /home/qtim_gbmSegmenter/setup.py develop
+RUN mv -v /home/models /home/qtim_gbmSegmenter/qtim_gbmSegmenter/DeepLearningLibrary/model_data/
 
 # Commands at startup.
 WORKDIR "/"

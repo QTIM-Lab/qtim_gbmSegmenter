@@ -1,3 +1,5 @@
+![Alt text](./package_resources/logos/qtim_gbmSegmenter.PNG?raw=true "qtim_gbmSegmenter")
+
 # qtim_gbmSegmenter
 This Github repository contains a nvidia-Docker container and full code/resources for pre-processing and segmenting medical imaging data for the case of glioblastoma (GBM). It takes as input four volumes (T2, T1 pre-contrast, T1 post-contrast, and FLAIR), and outputs segmentations for peritumoral edema and contrast-enhancing tumor. These segmentations are created from models trained by deep neural networks on hundreds of public and private datasets of pre-operative high- and low-grade GBMs. It also pre-processed the input data by performing bias correction, resampling to isotropic resolution, and coregistration. This repository was developed at the Quantitative Tumor Imaging Lab at the Martinos Center (MGH, MIT/Harvard HST).
 

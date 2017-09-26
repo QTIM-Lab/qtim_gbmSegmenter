@@ -1,5 +1,5 @@
 # qtim_gbmSegmenter
-This page contains a Docker container and full code/resources for pre-processing medical imaging data at the Quantitative Tumor Imaging Lab at the Martinos Center (MIT/HST). It aggregates pre-processing steps from 3D Slicer, FreeSurfer, ANTs, and FSL, as well as hard-coded steps written in Python with help from the python package nibabel. Currently, it takes in DICOM files and outputs NIFTI files.
+This Github repository contains a nvidia-Docker container and full code/resources for pre-processing and segmenting medical imaging data. It takes as input four volumes (T2, T1 pre-contrast, T1 post-contrast, and FLAIR), and outputs segmentations for peritumoral edema and contrast-enhancing tumor. These segmentations are created from models trained by deep neural networks. It also pre-processed the input data by performing bias correction, resampling to isotropic resolution, and coregistration. This repository was developed at the Quantitative Tumor Imaging Lab at the Martinos Center (MGH, MIT/Harvard HST).
 
 # Usage
 

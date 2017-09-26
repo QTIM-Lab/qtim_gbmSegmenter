@@ -8,7 +8,7 @@ from qtim_tools.qtim_preprocessing.image import fill_in_convex_outline
 from qtim_tools.qtim_utilities.nifti_util import save_numpy_2_nifti
 from scipy import misc, ndimage
 
-from qtim_gbmSegmenter.DeepLearningLibrary.models import skull_strip_models, evaluate_model, load_old_model
+#from qtim_gbmSegmenter.DeepLearningLibrary.models import skull_strip_models, evaluate_model, load_old_model
 
 # def skull_strip_fsl(bet_volume, output_filename, output_mask_suffix='_mask', skull_strip_threshold=.5, skull_strip_vertical_gradient=0):
     

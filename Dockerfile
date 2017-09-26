@@ -148,10 +148,10 @@ RUN pip install nibabel pydicom
 
 # Install ANTS
 WORKDIR /home
-RUN wget "https://github.com/stnava/ANTs/releases/download/v2.1.0/Linux_Debian_jessie_x64.tar.bz2" && \
+RUN wget "https://github.com/stnava/ANTs/releases/download/v2.1.0/Linux_Ubuntu14.04.tar.bz2" && \
   sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes bzip2 && \
-  tar -C /usr/local -xjf Linux_Debian_jessie_x64.tar.bz2 && \
-  rm Linux_Debian_jessie_x64.tar.bz2
+  tar -C /usr/local -xjf Linux_Ubuntu14.04.tar.bz2 && \
+  rm Linux_Ubuntu14.04.tar.bz2
 
 # Environmental Variables
 ENV PATH "$PATH:/opt/slicer"
@@ -162,10 +162,10 @@ RUN git clone https://github.com/QTIM-Lab/qtim_gbmSegmenter /home/qtim_gbmSegmen
 RUN git clone https://github.com/QTIM-Lab/qtim_tools /home/qtim_tools
 
 WORKDIR /home/qtim_tools
-RUN python /home/qtim_tools/setup.py install
+RUN python /home/qtim_tools/setup.py develop
 
 WORKDIR /home/qtim_gbmSegmenter
-RUN python /home/qtim_gbmSegmenter/setup.py install
+RUN python /home/qtim_gbmSegmenter/setup.py develop
 
 # Commands at startup.
 # ENTRYPOINT /bin/bash

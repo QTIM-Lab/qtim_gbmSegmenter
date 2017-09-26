@@ -3,8 +3,8 @@ import fnmatch
 
 from subprocess import call
 
-from qtim_gbmSegmenter.Config_Library.step import PipelineStep
-from qtim_gbmSegmenter.DeepLearningLibrary.models import skull_strip_models, evaluate_model, segmentation_models, load_old_model
+#from qtim_gbmSegmenter.Config_Library.step import PipelineStep
+#from qtim_gbmSegmenter.DeepLearningLibrary.models import skull_strip_models, evaluate_model, segmentation_models, load_old_model
 
 def segment_deepneuro(input_volumes, output_filenames, output_wholetumor_name, output_enhancing_name):
 

@@ -11,15 +11,15 @@ def N4_Bias_Correct(input_volumes, output_filenames):
         n4bias_base_command = ['N4BiasFieldCorrection']
 
         n4bias_specific_command = n4bias_base_command + ['-i', input_volume, '-o', output_filenames[key]]
-
-        try:
-            print 'Using ANTs\' N4BiasCorrection to correct intensity inhomgeneities from ' + input_volume + ' to output volume ' + output_filenames[idx] + '...'
+	if True:
+    #    try:
+            print 'Using ANTs\' N4BiasCorrection to correct intensity inhomgeneities from ' + input_volume + ' to output volume ' + output_filenames[key] + '...'
             call(' '.join(n4bias_specific_command), shell=True)
             return_filenames[key] = output_filenames[key]
-        except:
+     #   except:
             print 'ANTs N4BiasCorrection failed for file ' + input_volume
 
-        return return_filenames
+    return return_filenames
 
 def execute(input_volumes, output_filenames, specific_function, params):
 

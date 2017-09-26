@@ -48,51 +48,51 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     # Bias Correction Step
     # Available methods: 'ants_n4_bias'
 
-    output_folder = './INPUT_DATA/BIAS_CORRECTED_NIFTI'
-    output_suffix = '_nobias'
+    # output_folder = './INPUT_DATA/BIAS_CORRECTED_NIFTI'
+    # output_suffix = '_nobias'
 
-    method = 'ants_n4_bias'
+    # method = 'ants_n4_bias'
 
-    extra_parameters = []
+    # extra_parameters = []
 
-    output = pipeline.execute('bias_correct', output, None, None, output_folder, output_suffix, method, extra_parameters)
+    # output = pipeline.execute('bias_correct', output, None, None, output_folder, output_suffix, method, extra_parameters)
+
+    # # # #--------------------------------------------------------------------#
+
+    # # # #--------------------------------------------------------------------#
+    # # Resampling Step
+    # # Available methods: 'slicer_resample'
+
+    # output_folder = './INPUT_DATA/ISOTROPIC_NIFTI'
+    # output_suffix = '_isotropic'
+
+    # method = 'slicer_resample'
+
+    # dimensions = [1,1,1]
+    # interpolation_mode = 'linear'
+    # extra_parameters = [dimensions, interpolation_mode]
+
+    # output = pipeline.execute('resample', output, None, None, output_folder, output_suffix, method, extra_parameters)
 
     # # #--------------------------------------------------------------------#
 
     # # #--------------------------------------------------------------------#
-    # Resampling Step
-    # Available methods: 'slicer_resample'
+    # # # Registration Step
+    # # # Available methods: 'slicer_registration'
 
-    output_folder = './INPUT_DATA/ISOTROPIC_NIFTI'
-    output_suffix = '_isotropic'
+    # output_folder = final_output_folder
+    # output_suffix = '_reg'
 
-    method = 'slicer_resample'
+    # method = 'slicer_registration'
 
-    dimensions = [1,1,1]
-    interpolation_mode = 'linear'
-    extra_parameters = [dimensions, interpolation_mode]
+    # fixed_volume = 'T2'
+    # transform_type = 'Rigid,ScaleVersor3D,ScaleSkewVersor3D,Affine'
+    # transform_mode = 'useMomentsAlign'
+    # interpolation_mode = 'Linear'
+    # sampling_percentage = .002
+    # extra_parameters = [fixed_volume, transform_type, transform_mode, interpolation_mode, sampling_percentage]
 
-    output = pipeline.execute('resample', output, None, None, output_folder, output_suffix, method, extra_parameters)
-
-    # #--------------------------------------------------------------------#
-
-    # #--------------------------------------------------------------------#
-    # # Registration Step
-    # # Available methods: 'slicer_registration'
-
-    output_folder = final_output_folder
-    output_suffix = '_reg'
-
-    method = 'slicer_registration'
-
-    fixed_volume = 'T2'
-    transform_type = 'Rigid,ScaleVersor3D,ScaleSkewVersor3D,Affine'
-    transform_mode = 'useMomentsAlign'
-    interpolation_mode = 'Linear'
-    sampling_percentage = .002
-    extra_parameters = [fixed_volume, transform_type, transform_mode, interpolation_mode, sampling_percentage]
-
-    output = pipeline.execute('register', output, None, None, output_folder, output_suffix, method, extra_parameters)
+    # output = pipeline.execute('register', output, None, None, output_folder, output_suffix, method, extra_parameters)
 
     # # # #--------------------------------------------------------------------#
 

@@ -155,9 +155,10 @@ RUN wget "https://github.com/stnava/ANTs/releases/download/v2.1.0/Linux_Ubuntu14
 
 # Environmental Variables
 ENV PATH "$PATH:/opt/slicer"
+ENV PATH "$PATH:/usr/local/ANTs.2.1.0.Debian-Ubuntu_X64"
 
 # Pull git repository for qtim_gbmSegmenter
-RUN echo hello
+# RUN echo hello
 RUN git clone https://github.com/QTIM-Lab/qtim_gbmSegmenter /home/qtim_gbmSegmenter
 RUN git clone https://github.com/QTIM-Lab/qtim_tools /home/qtim_tools
 

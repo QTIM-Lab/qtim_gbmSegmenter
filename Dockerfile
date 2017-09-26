@@ -171,22 +171,23 @@ ENV PATH "$PATH:/usr/local/ANTs.2.1.0.Debian-Ubuntu_X64"
 # RUN echo "source ${FSLDIR}/etc/fslconf/fsl.sh" >> ~/.bashrc
 
 # Pull git repository for qtim_gbmSegmenter
-RUN echo checkpoint3
-RUN git clone https://github.com/QTIM-Lab/qtim_gbmSegmenter /home/qtim_gbmSegmenter
-RUN git clone https://github.com/QTIM-Lab/qtim_tools /home/qtim_tools
-
 # Install qtim_packages. For some reason, need to change directory, investigate
 # TODO, make pip install versions for maintainability.
+RUN git clone https://github.com/QTIM-Lab/qtim_tools /home/qtim_tools
 WORKDIR /home/qtim_tools
 RUN python /home/qtim_tools/setup.py develop
-WORKDIR /home/qtim_gbmSegmenter
-RUN python /home/qtim_gbmSegmenter/setup.py develop
 
 # Copy in models
 RUN mkdir /home/qtim_gbmSegmenter/qtim_gbmSegmenter/DeepLearningLibrary/model_data
 RUN wget -O /home/qtim_gbmSegmenter/qtim_gbmSegmenter/DeepLearningLibrary/model_data/FLAIR_ss.h5 "https://www.dropbox.com/s/lckmz8ptihxamtp/FLAIR_ss.h5?dl=1"
 RUN wget -O /home/qtim_gbmSegmenter/qtim_gbmSegmenter/DeepLearningLibrary/model_data/enhancingtumor.h5 "https://www.dropbox.com/s/8ucsrzypti958j0/enhancingtumor_noT2.h5?dl=1"
 RUN wget -O /home/qtim_gbmSegmenter/qtim_gbmSegmenter/DeepLearningLibrary/model_data/wholetumor.h5 "https://www.dropbox.com/s/s5sn7yk8znpmax4/wholetumor_noT2.h5?dl=1"
+
+RUN echo checkpoint2
+
+RUN git clone https://github.com/QTIM-Lab/qtim_gbmSegmenter /home/qtim_gbmSegmenter
+WORKDIR /home/qtim_gbmSegmenter
+RUN python /home/qtim_gbmSegmenter/setup.py develop
 
 # Commands at startup.
 WORKDIR "/"

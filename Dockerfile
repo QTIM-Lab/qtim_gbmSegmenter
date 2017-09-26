@@ -154,21 +154,21 @@ RUN wget "https://github.com/stnava/ANTs/releases/download/v2.1.0/Linux_Ubuntu14
   rm Linux_Ubuntu14.04.tar.bz2
 
 # Install NeuroDebian
-# RUN wget -O- http://neuro.debian.net/lists/jessie.us-ca.full | sudo tee /etc/apt/sources.list.d/neurodebian.sources.list && \
-#   apt-key adv --recv-keys --keyserver hkp://pgp.mit.edu:80 0xA5D32F012649A5A9 && \
-#   apt-get update
+RUN wget -O- http://neuro.debian.net/lists/trusty.us-nh.full | sudo tee /etc/apt/sources.list.d/neurodebian.sources.list
+RUN sudo apt-key adv --recv-keys --keyserver hkp://pool.sks-keyservers.net:80 0xA5D32F012649A5A9
+RUN apt-get update
 
-# # Install FSL with NeuroDebian
-# RUN sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes fsl-5.0-complete
+# Install FSL with NeuroDebian
+RUN sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes fsl-5.0-complete
 
 # Environmental Variables
 ENV PATH "$PATH:/opt/slicer"
 ENV PATH "$PATH:/usr/local/ANTs.2.1.0.Debian-Ubuntu_X64"
-# ENV FSLDIR /usr/share/fsl/5.0
+ENV FSLDIR /usr/share/fsl/5.0
 
 # Setup Scripts
-# RUN echo "source $FREESURFER_HOME/SetUpFreeSurfer.sh" >> ~/.bashrc
-# RUN echo "source ${FSLDIR}/etc/fslconf/fsl.sh" >> ~/.bashrc
+RUN echo "source $FREESURFER_HOME/SetUpFreeSurfer.sh" >> ~/.bashrc
+RUN echo "source ${FSLDIR}/etc/fslconf/fsl.sh" >> ~/.bashrc
 
 # Pull git repository for qtim_gbmSegmenter
 # Install qtim_packages. For some reason, need to change directory, investigate
@@ -191,9 +191,9 @@ RUN wget -O /home/models/wholetumor.h5 "https://www.dropbox.com/s/s5sn7yk8znpmax
 
 RUN mv -v /home/models /home/qtim_gbmSegmenter/qtim_gbmSegmenter/DeepLearningLibrary/model_data/
 
-RUN echo checkpoint6
+RUN echo checkpoint7
 RUN git pull
 
 # Commands at startup.
 WORKDIR "/"
-# CMD /bin/bash -c "source /root/.bashrc"
+CMD /bin/bash -c "source /root/.bashrc"

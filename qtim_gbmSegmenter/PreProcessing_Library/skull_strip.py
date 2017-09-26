@@ -14,23 +14,34 @@ def skull_strip_fsl(input_volumes, output_filenames, output_mask_suffix='_mask',
     
     # Note - include head radius and center options in the future.
 
-    bet_base_command = ['fsl4.1-bet2', bet_volume, output_filename, '-f', str(skull_strip_threshold), '-g', str(skull_strip_vertical_gradient), '-m']
+    bet_volume = input_volumes['T2']
 
-    bet_specific_command = bet_base_command
+    bet_base_command = ['bet2', bet_volume, output_filenames['T2'], '-f', str(skull_strip_threshold), '-g', str(skull_strip_vertical_gradient), '-m']
 
     try:
         print '\n'
         print 'Using FSL\'s BET2 (Brain Extraction Tool) to skull-strip ' + bet_volume + ' to output volume ' + output_filename + '...'
-        call(' '.join(bet_specific_command), shell=True)
+        call(' '.join(bet_base_command), shell=True)
 
-        no_path = os.path.basename(os.path.normpath(output_filename))
-        file_prefix = str.split(no_path, '.nii')
-        os.rename(output_filename + '_mask.nii.gz', os.path.join(os.path.dirname(output_filename), file_prefix[0] + output_mask_suffix + '.nii.gz'))
+        output_mask = os.path.join(os.path.dirname(bet_volume), os.path.basename(replace_suffix(bet_volume, '', output_mask_suffix)))
+        os.rename(replace_suffix(output_filenames['T2'], '', '_mask'), output_mask)
 
     except:
         print 'BET2 skull-stripping failed for file ' + bet_volume
 
-    return
+    return_filenames = {}
+    return_filenames['mask'] = output_mask
+
+    for key, input_volume in input_volumes.iteritems():
+
+        label_data = convert_input_2_numpy(output_mask)
+        crop_data = convert_input_2_numpy(input_volume)
+        crop_data[label_data == 0] = 0
+        save_numpy_2_nifti(crop_data, input_volume, output_filenames[key])
+
+        return_filenames[key] = output_filenames[key]
+
+    return return_filenames
 
 def skull_strip_deepneuro(input_volumes, output_filenames, output_mask_suffix='_mask'):
 
@@ -61,7 +72,7 @@ def skull_strip_deepneuro(input_volumes, output_filenames, output_mask_suffix='_
 def execute(input_volumes, output_filenames, specific_function, params):
 
     if specific_function == 'fsl_skull_stripping':
-        skull_strip_fsl(*[input_volumes, output_filenames] + params)
+        return skull_strip_fsl(*[input_volumes, output_filenames] + params)
     elif specific_function == 'deepneuro_skull_stripping':
         return skull_strip_deepneuro(*[input_volumes, output_filenames] + params)
     else:

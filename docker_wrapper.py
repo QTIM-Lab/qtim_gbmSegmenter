@@ -63,4 +63,6 @@ if __name__ == '__main__':
     FLAIR = '/home/administrator/test_data/NORMALIZED_NIFTI/TATA_FLAIR_nobias_isotropic_reg_ss_normalized.nii.gz'
     OUTPUT = '/home/administrator/test_data/TATA'
 
-    segmentation_docker(T2, T1, T1POST, FLAIR, OUTPUT, interactive=False, niftis=True, preprocessed=True, no_ss=True)
+    segmentation_docker(T2, T1, T1POST, FLAIR, OUTPUT, interactive=True, niftis=True, preprocessed=True, no_ss=True)
+
+    TATA/TATA_T2_nobias_isotropic_reg.nii.gz TATA/TATA_T1_nobias_isotropic_reg.nii.gz TATA/TATA_T1C_nobias_isotropic_reg.nii.gz TATA/TATA_FLAIR_nobias_isotropic_reg.nii.gz bratstest -niftis -preprocessed

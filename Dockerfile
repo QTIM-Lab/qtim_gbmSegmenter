@@ -164,11 +164,9 @@ RUN sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes fsl-5.0-c
 # Environmental Variables
 ENV PATH "$PATH:/opt/slicer"
 ENV PATH "$PATH:/usr/local/ANTs.2.1.0.Debian-Ubuntu_X64"
-ENV FSLDIR /usr/share/fsl/5.0
 
 # Setup Scripts
-RUN echo "source $FREESURFER_HOME/SetUpFreeSurfer.sh" >> ~/.bashrc
-RUN echo "source ${FSLDIR}/etc/fslconf/fsl.sh" >> ~/.bashrc
+RUN echo "source /usr/share/fsl/5.0/etc/fslconf/fsl.sh" >> ~/.bashrc
 
 # Pull git repository for qtim_gbmSegmenter
 # Install qtim_packages. For some reason, need to change directory, investigate
@@ -197,4 +195,5 @@ RUN git pull
 
 # Commands at startup.
 WORKDIR "/"
-CMD /bin/bash -c "source /root/.bashrc"
+ENTRYPOINT ["/home/qtim_gbmSegmenter/entrypoint.sh"]
+# CMD /bin/bash -c "source /root/.bashrc"

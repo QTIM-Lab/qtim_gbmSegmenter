@@ -128,17 +128,16 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     # Downsampling Step
     # Available methods: 'slicer_resample'
 
-    if not preprocessed:
-        output_folder = './INPUT_DATA/DOWNSAMPLE_NIFTI'
-        output_suffix = '_downsampled'
+    output_folder = './INPUT_DATA/DOWNSAMPLE_NIFTI'
+    output_suffix = '_downsampled'
 
-        method = 'slicer_resample'
+    method = 'slicer_resample'
 
-        dimensions = [2,2,2]
-        interpolation_mode = 'linear'
-        extra_parameters = [dimensions, interpolation_mode]
+    dimensions = [2,2,2]
+    interpolation_mode = 'linear'
+    extra_parameters = [dimensions, interpolation_mode]
 
-        output = pipeline.execute('resample', output, None, None, output_folder, output_suffix, method, extra_parameters)
+    output = pipeline.execute('resample', output, None, None, output_folder, output_suffix, method, extra_parameters)
 
     # #--------------------------------------------------------------------#
 
@@ -146,16 +145,15 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     # # # Normalizing Step
     # # # Available methods: 'zeromean_normalize'
 
-    if not no_ss:
-        output_folder = './INPUT_DATA/NORMALIZED_NIFTI'
-        output_suffix = '_normalized'
+    output_folder = './INPUT_DATA/NORMALIZED_NIFTI'
+    output_suffix = '_normalized'
 
-        method = 'zeromean_normalize'
+    method = 'zeromean_normalize'
 
-        mask = 'mask'
-        extra_parameters = [mask]
+    mask = 'mask'
+    extra_parameters = [mask]
 
-        output = pipeline.execute('normalize', output, None, None, output_folder, output_suffix, method, extra_parameters)
+    output = pipeline.execute('normalize', output, None, None, output_folder, output_suffix, method, extra_parameters)
 
     # # #--------------------------------------------------------------------#
 
@@ -180,17 +178,16 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     # Upsampling Step
     # Available methods: 'slicer_resample'
 
-    if not preprocessed:
-        output_folder = './INPUT_DATA/DOWNSAMPLE_NIFTI'
-        output_suffix = '_downsampled'
+    output_folder = './INPUT_DATA/DOWNSAMPLE_NIFTI'
+    output_suffix = '_downsampled'
 
-        method = 'slicer_resample'
+    method = 'slicer_resample'
 
-        dimensions = [1,1,1]
-        interpolation_mode = 'nn'
-        extra_parameters = [dimensions, interpolation_mode]
+    dimensions = [1,1,1]
+    interpolation_mode = 'nearestNeighbor'
+    extra_parameters = [dimensions, interpolation_mode]
 
-        output_upsample['wholetumor_downsample'] = pipeline.execute('resample', output, None, None, output_folder, output_suffix, method, extra_parameters)['wholetumor_downsample']
+    output_upsample['wholetumor_downsample'] = pipeline.execute('resample', output, None, None, output_folder, output_suffix, method, extra_parameters)['wholetumor_downsample']
 
     # #--------------------------------------------------------------------#
 
@@ -198,16 +195,15 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     # # # Normalizing Step
     # # # Available methods: 'zeromean_normalize'
 
-    if not no_ss:
-        output_folder = './INPUT_DATA/NORMALIZED_NIFTI'
-        output_suffix = '_normalized'
+    output_folder = './INPUT_DATA/NORMALIZED_NIFTI'
+    output_suffix = '_normalized'
 
-        method = 'zeromean_normalize'
+    method = 'zeromean_normalize'
 
-        mask = 'mask'
-        extra_parameters = [mask]
+    mask = 'mask'
+    extra_parameters = [mask]
 
-        output = pipeline.execute('normalize', output_upsample, None, None, output_folder, output_suffix, method, extra_parameters)
+    output = pipeline.execute('normalize', output_upsample, None, None, output_folder, output_suffix, method, extra_parameters)
 
     # # #--------------------------------------------------------------------#
 
@@ -246,7 +242,7 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     # #--------------------------------------------------------------------#
 
     if not keep_outputs:
-        pipeline.clear_directories(['./INPUT_DATA/RAW_NIFTI', './INPUT_DATA/BIAS_CORRECTED_NIFTI', './INPUT_DATA/ISOTROPIC_NIFTI', './INPUT_DATA/SKULLSTRIP_NIFTI', './INPUT_DATA/NORMALIZED_NIFTI'])
+        pipeline.clear_directories(['./INPUT_DATA/RAW_NIFTI', './INPUT_DATA/BIAS_CORRECTED_NIFTI', './INPUT_DATA/ISOTROPIC_NIFTI', './INPUT_DATA/SKULLSTRIP_NIFTI', './INPUT_DATA/NORMALIZED_NIFTI', './INPUT_DATA/DOWNSAMPLE_NIFTI'])
 
     return
 

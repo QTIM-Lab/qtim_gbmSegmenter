@@ -38,7 +38,7 @@ def segment_deepneuro(input_volumes, output_filenames, output_segmentation_name,
 def execute(input_volumes, output_filenames, specific_function, params):
 
     if specific_function == 'deepneuro_segment':
-        segment_deepneuro(*[input_volumes, output_filenames] + params)
+        return segment_deepneuro(*[input_volumes, output_filenames] + params)
     else:
         print 'There is no segmentation method associated with this keyword: ' + specific_function + '. Skipping volumes located at...' + input_volumes
 

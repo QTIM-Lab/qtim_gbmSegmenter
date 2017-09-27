@@ -8,6 +8,9 @@ def docker_segmentation(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final
     paths = [T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_output_folder]
     mounted_dir = os.path.abspath(os.path.dirname(os.path.commonprefix(paths)))
 
+    if gpu_num is None:
+        gpu_num = '0'
+
     if interactive:
         docker_command = ['nvidia-docker', 'run', '-it', '-v', mounted_dir + ':/INPUT_DATA', 'qtim_gbmsegmenter', 'bash']
 

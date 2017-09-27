@@ -189,11 +189,10 @@ RUN wget -O /home/models/upsample_wholetumor.h5 "https://www.dropbox.com/s/r4pel
 
 RUN mv -v /home/models /home/qtim_gbmSegmenter/qtim_gbmSegmenter/DeepLearningLibrary/model_data/
 
-RUN echo checkpoint4
-
 RUN git pull
 
 # Commands at startup.
 WORKDIR "/"
+RUN chmod 777 /home/qtim_gbmSegmenter/entrypoint.sh
 ENTRYPOINT ["/home/qtim_gbmSegmenter/entrypoint.sh"]
 # CMD /bin/bash -c "source /root/.bashrc"

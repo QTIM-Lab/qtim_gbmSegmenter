@@ -6,6 +6,7 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
 
     #--------------------------------------------------------------------#
     # Global settings
+    gpu_num = str(gpu_num)
     num_processes = 1
     #--------------------------------------------------------------------#
 
@@ -110,17 +111,16 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     # # # Skull-Stripping Step
     # # # Available methods: 'deepneuro_skull_stripping'
 
-    if not no_ss:
-        output_folder = './INPUT_DATA/SKULLSTRIP_NIFTI'
-        output_suffix = '_ss'
+    output_folder = './INPUT_DATA/SKULLSTRIP_NIFTI'
+    output_suffix = '_ss'
 
-        method = 'fsl_skull_stripping'
+    method = 'fsl_skull_stripping'
 
-        output_mask_suffix = '_mask'
-        extra_parameters = [output_mask_suffix]
+    output_mask_suffix = '_mask'
+    extra_parameters = [output_mask_suffix]
 
-        output = pipeline.execute('skull_strip', output, None, None, output_folder, output_suffix, method, extra_parameters)
-        output_upsample = output
+    output = pipeline.execute('skull_strip', output, None, None, output_folder, output_suffix, method, extra_parameters)
+    output_upsample = output
 
     # # # # #--------------------------------------------------------------------#
 

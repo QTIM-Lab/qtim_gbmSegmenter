@@ -25,15 +25,15 @@ def segment_deepneuro(input_volumes, output_filenames, output_segmentation_name,
 
     output_segmentation = os.path.join(os.path.dirname(output_filenames['T2']), output_segmentation_name + '-label.nii.gz')
 
-    # try:
+    try:
 
-    return_filenames[model_name] = evaluate_model(load_old_model(model_dict[model_name]), segmentation_input_filenames, os.path.abspath(output_segmentation), patch_shape=(32,32,32))
+        return_filenames[model_name] = evaluate_model(load_old_model(model_dict[model_name]), segmentation_input_filenames, os.path.abspath(output_segmentation), patch_shape=(32,32,32))
 
-    return return_filenames
+        return return_filenames
 
-    # except:
-    #     print 'DeepNeuro skull-stripping failed for file ' + input_filename
-    #     return []
+    except:
+        print 'DeepNeuro segmentation failed for model ' + model_name
+        return []
 
 def execute(input_volumes, output_filenames, specific_function, params):
 

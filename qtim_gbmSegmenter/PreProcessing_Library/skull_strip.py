@@ -18,19 +18,15 @@ def skull_strip_fsl(input_volumes, output_filenames, output_mask_suffix='_mask',
 
     bet_base_command = ['bet2', bet_volume, output_filenames['T2'], '-f', str(skull_strip_threshold), '-g', str(skull_strip_vertical_gradient), '-m']
 
-    if True:
-    # try:
+    try:
         print ' '.join(bet_base_command)
-        print input_volumes
-        print '\n'
-        call('source /root/.bashrc', shell=True)
         print 'Using FSL\'s BET2 (Brain Extraction Tool) to skull-strip ' + bet_volume + ' to output volume ' + output_filenames['T2'] + '...'
         call(' '.join(bet_base_command), shell=True)
 
         output_mask = os.path.join(os.path.dirname(bet_volume), os.path.basename(replace_suffix(bet_volume, '', output_mask_suffix)))
         os.rename(output_filenames['T2'] + '_mask.nii.gz', output_mask)
 
-    # except:
+    except:
         print 'BET2 skull-stripping failed for file ' + bet_volume
 
     return_filenames = {}

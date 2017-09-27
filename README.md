@@ -3,11 +3,11 @@
 # qtim_gbmSegmenter
 This Github repository contains a nvidia-Docker container and full code/resources for pre-processing and segmenting medical imaging data for the case of glioblastoma (GBM). It takes as input four volumes (T2, T1 pre-contrast, T1 post-contrast, and FLAIR), and outputs segmentations for peritumoral edema and contrast-enhancing tumor. These segmentations are created from models trained by deep neural networks on hundreds of public and private datasets of pre-operative high- and low-grade GBMs. It also pre-processed the input data by performing bias correction, resampling to isotropic resolution, and coregistration. This repository was developed at the Quantitative Tumor Imaging Lab at the Martinos Center (MGH, MIT/Harvard HST).
 
-### Table of Contents
+## Table of Contents
 - [Installation](#installation) 
 - [Docker Usage](#docker-usage)
 - [Python Wrapper Usage](#python-wrapper-usage)
-- [Contact](#Contact)
+- [Contact](#contact)
 
 ## Installation
 
@@ -37,7 +37,7 @@ An brief explanation of parameters after docker_pipeline follows.
 * -preprocessed: Skip bias correction, resampling, and registration.
 * -keep_outputs: Do not delete files generated from intermediary steps.
 
-# Example
+### Example
 
 Let's say you stored some DICOM data on your computer at the path /home/my_user/Data/, and wanted to segment data located at /home/my_user/Data/Patient_1. The nvidia-docker command would look like this:
 

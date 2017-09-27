@@ -2,12 +2,11 @@ import sys
 import os
 import glob
 
-def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_output_folder, niftis, nobias, preprocessed, no_ss, keep_outputs):
+def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_output_folder, gpu_num, niftis, nobias, preprocessed, no_ss, keep_outputs):
 
     #--------------------------------------------------------------------#
     # Global settings
     num_processes = 1
-    gpu_num = 0
     #--------------------------------------------------------------------#
 
     #--------------------------------------------------------------------#

@@ -184,8 +184,8 @@ RUN python /home/qtim_gbmSegmenter/setup.py develop
 # Copy in models
 RUN mkdir -p /home/models
 RUN wget -O /home/models/FLAIR_ss.h5 "https://www.dropbox.com/s/lckmz8ptihxamtp/FLAIR_ss.h5?dl=1"
-RUN wget -O /home/models/enhancingtumor.h5 "https://www.dropbox.com/s/8ucsrzypti958j0/enhancingtumor_noT2.h5?dl=1"
-RUN wget -O /home/models/wholetumor.h5 "https://www.dropbox.com/s/s5sn7yk8znpmax4/wholetumor_noT2.h5?dl=1"
+RUN wget -O /home/models/enhancingtumor.h5 "https://www.dropbox.com/s/j4an2pc69sbnuvs/enhancingtumor_BRATS_only.h5?dl=1"
+RUN wget -O /home/models/wholetumor.h5 "https://www.dropbox.com/s/ff8j2equqnn04as/wholetumor_BRATS_only.h5?dl=1"
 
 RUN mv -v /home/models /home/qtim_gbmSegmenter/qtim_gbmSegmenter/DeepLearningLibrary/model_data/
 

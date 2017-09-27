@@ -16,7 +16,7 @@ def segment_deepneuro(input_volumes, output_filenames, output_wholetumor_name, o
     # for modality_code in ['FLAIR', 'T2', 'T1', 'T1POST']:
     #     enhancingtumor_input_filenames += [input_volumes[modality_code]]
 
-    for modality_code in ['FLAIR', 'T1', 'T1POST']:
+    for modality_code in ['FLAIR', 'T2', 'T1', 'T1POST']:
         enhancingtumor_input_filenames += [input_volumes[modality_code]]
         wholetumor_input_filenames += [input_volumes[modality_code]]
         
@@ -25,10 +25,10 @@ def segment_deepneuro(input_volumes, output_filenames, output_wholetumor_name, o
 
     # try:
 
-    evaluate_model(load_old_model(model_dict['wholetumor']), wholetumor_input_filenames, os.path.abspath(output_wholetumor), patch_shape=(32,32,32))
+    evaluate_model(load_old_model(model_dict['wholetumor']), wholetumor_input_filenames, os.path.abspath(output_wholetumor), patch_shape=(16,16,16))
     return_filenames['wholetumor'] = output_wholetumor
 
-    evaluate_model(load_old_model(model_dict['enhancingtumor']), enhancingtumor_input_filenames + [output_wholetumor], os.path.abspath(output_enhancing), patch_shape=(32,32,32))
+    evaluate_model(load_old_model(model_dict['enhancingtumor']), enhancingtumor_input_filenames + [output_wholetumor], os.path.abspath(output_enhancing), patch_shape=(16,16,16))
     return_filenames['enhancingtumor'] = output_enhancing
 
     return return_filenames

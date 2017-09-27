@@ -45,10 +45,10 @@ if __name__ == '__main__':
     FLAIR = '/home/administrator/test_data/TATA/FLAIRmosaic_nobias_isotropic_reg.nii.gz'
     OUTPUT = '/home/administrator/test_data/TATA'
 
-    T2 = '/home/administrator/test_data/TATA/TATA_T2_preproc.nii.gz'
-    T1 = '/home/administrator/test_data/TATA/TATA_T1_preproc.nii.gz'
-    T1POST = '/home/administrator/test_data/TATA/TATA_T1C_preproc.nii.gz'
-    FLAIR = '/home/administrator/test_data/TATA/TATA_FLAIR_preproc.nii.gz'
+    T2 = '/home/administrator/test_data/TATA/TATA_T2.nii.gz'
+    T1 = '/home/administrator/test_data/TATA/TATA_T1.nii.gz'
+    T1POST = '/home/administrator/test_data/TATA/TATA_T1C.nii.gz'
+    FLAIR = '/home/administrator/test_data/TATA/TATA_FLAIR.nii.gz'
     OUTPUT = '/home/administrator/test_data/TATA'
 
-    segmentation_docker(T2, T1, T1POST, FLAIR, OUTPUT, interactive=False, niftis=True, preprocessed=True, no_ss=True)
+    segmentation_docker(T2, T1, T1POST, FLAIR, OUTPUT, interactive=True, niftis=True, preprocessed=False, no_ss=False)

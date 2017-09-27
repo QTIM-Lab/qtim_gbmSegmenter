@@ -18,7 +18,7 @@ def skull_strip_models():
 def segmentation_models():
 
     model_dict = {}
-    for tissue in ['wholetumor', 'enhancingtumor']:
+    for tissue in ['wholetumor', 'wholetumor_downsample', 'enhancingtumor', 'upsample_wholetumor']:
         model_dict[tissue] = os.path.join(os.path.dirname(__file__),'model_data', tissue + '.h5')
 
     return model_dict
@@ -39,6 +39,8 @@ def evaluate_model(model, input_filenames, output_filename, patch_shape):
     output_data = predict_patches_one_image(input_data, patch_shape, model, output_shape, repetitions=8, model_batch_size=100)
 
     save_prediction(output_data, output_filename, input_affine=input_affine)
+
+    return output_filename
 
 def predict_patches_one_image(input_data, patch_shape, model, output_shape, repetitions=1, model_batch_size=1):
 

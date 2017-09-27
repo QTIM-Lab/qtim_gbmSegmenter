@@ -8,18 +8,19 @@ import fnmatch
 from qtim_tools.qtim_utilities.format_util import convert_input_2_numpy
 from qtim_tools.qtim_utilities.nifti_util import save_numpy_2_nifti
 
-def normalize_zeromean_unitvariance(input_volumes, output_filenames):
+def normalize_zeromean_unitvariance(input_volumes, output_filenames, mask='mask'):
 
     return_filenames = {}
 
-    if 'mask' in input_volumes.keys():
-        label_volume = input_volumes['mask']
+    if mask in input_volumes.keys():
+        label_volume = input_volumes[mask]
+        ROI_numpy = convert_input_2_numpy(label_volume)
     else:
         label_volume = None
 
     for key, input_volume in input_volumes.iteritems():
 
-        if key == 'mask':
+        if key == mask:
             continue
 
         # try:
@@ -28,7 +29,6 @@ def normalize_zeromean_unitvariance(input_volumes, output_filenames):
         normalize_numpy = convert_input_2_numpy(input_volume)
 
         if label_volume is not None:
-            ROI_numpy = convert_input_2_numpy(label_volume)
             vol_mean = np.mean(normalize_numpy[ROI_numpy > 0])
             vol_std = np.std(normalize_numpy[ROI_numpy > 0])
             normalize_numpy = (normalize_numpy - vol_mean) / vol_std

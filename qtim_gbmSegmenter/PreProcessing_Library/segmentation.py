@@ -5,31 +5,29 @@ from subprocess import call
 
 from qtim_gbmSegmenter.DeepLearningLibrary.models import skull_strip_models, evaluate_model, segmentation_models, load_old_model
 
-def segment_deepneuro(input_volumes, output_filenames, output_wholetumor_name, output_enhancing_name):
+def segment_deepneuro(input_volumes, output_filenames, output_segmentation_name, model_name):
 
     model_dict = segmentation_models()
-    wholetumor_input_filenames, enhancingtumor_input_filenames = [], []
+    segmentation_input_filenames = []
     return_filenames = input_volumes
 
-    # for modality_code in ['FLAIR', 'T2', 'T1POST', 'T1']:
-    #     wholetumor_input_filenames += [input_volumes[modality_code]]
-    # for modality_code in ['FLAIR', 'T2', 'T1', 'T1POST']:
-    #     enhancingtumor_input_filenames += [input_volumes[modality_code]]
+    if model_name == 'wholetumor_downsample':
+        for modality_code in ['FLAIR', 'T2', 'T1', 'T1POST']:
+            segmentation_input_filenames += [input_volumes[modality_code]]
 
-    for modality_code in ['FLAIR', 'T2', 'T1', 'T1POST']:
-        enhancingtumor_input_filenames += [input_volumes[modality_code]]
-        wholetumor_input_filenames += [input_volumes[modality_code]]
-        
-    output_wholetumor = os.path.join(os.path.dirname(output_filenames['T2']), output_wholetumor_name + '-label.nii.gz')
-    output_enhancing = os.path.join(os.path.dirname(output_filenames['T2']), output_enhancing_name + '-label.nii.gz')
+    if model_name == 'upsample_wholetumor':
+        for modality_code in ['FLAIR', 'T2', 'T1', 'T1POST', 'wholetumor_downsample']:
+            segmentation_input_filenames += [input_volumes[modality_code]]
+
+    if model_name == 'enhancingtumor':
+        for modality_code in ['FLAIR', 'T2', 'T1', 'T1POST', 'upsample_wholetumor']:
+            segmentation_input_filenames += [input_volumes[modality_code]]
+
+    output_segmentation = os.path.join(os.path.dirname(output_filenames['T2']), output_segmentation_name + '-label.nii.gz')
 
     # try:
 
-    evaluate_model(load_old_model(model_dict['wholetumor']), wholetumor_input_filenames, os.path.abspath(output_wholetumor), patch_shape=(16,16,16))
-    return_filenames['wholetumor'] = output_wholetumor
-
-    evaluate_model(load_old_model(model_dict['enhancingtumor']), enhancingtumor_input_filenames + [output_wholetumor], os.path.abspath(output_enhancing), patch_shape=(16,16,16))
-    return_filenames['enhancingtumor'] = output_enhancing
+    return_filenames[model_name] = evaluate_model(load_old_model(model_dict[model_name]), segmentation_input_filenames, os.path.abspath(output_segmentation), patch_shape=(32,32,32))
 
     return return_filenames
 

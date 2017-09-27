@@ -99,7 +99,7 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
         transform_type = 'Rigid,ScaleVersor3D,ScaleSkewVersor3D,Affine'
         transform_mode = 'useMomentsAlign'
         interpolation_mode = 'Linear'
-        sampling_percentage = .002
+        sampling_percentage = .008
         extra_parameters = [fixed_volume, transform_type, transform_mode, interpolation_mode, sampling_percentage]
 
         output = pipeline.execute('register', output, None, None, output_folder, output_suffix, method, extra_parameters)
@@ -120,8 +120,27 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
         extra_parameters = [output_mask_suffix]
 
         output = pipeline.execute('skull_strip', output, None, None, output_folder, output_suffix, method, extra_parameters)
+        output_upsample = output
 
     # # # # #--------------------------------------------------------------------#
+
+    # # #--------------------------------------------------------------------#
+    # Downsampling Step
+    # Available methods: 'slicer_resample'
+
+    if not preprocessed:
+        output_folder = './INPUT_DATA/DOWNSAMPLE_NIFTI'
+        output_suffix = '_downsampled'
+
+        method = 'slicer_resample'
+
+        dimensions = [2,2,2]
+        interpolation_mode = 'linear'
+        extra_parameters = [dimensions, interpolation_mode]
+
+        output = pipeline.execute('resample', output, None, None, output_folder, output_suffix, method, extra_parameters)
+
+    # #--------------------------------------------------------------------#
 
     # # # #--------------------------------------------------------------------#
     # # # Normalizing Step
@@ -133,7 +152,8 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
 
         method = 'zeromean_normalize'
 
-        extra_parameters = []
+        mask = 'mask'
+        extra_parameters = [mask]
 
         output = pipeline.execute('normalize', output, None, None, output_folder, output_suffix, method, extra_parameters)
 
@@ -148,11 +168,80 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
 
     method = 'deepneuro_segment'
 
-    output_wholetumor_name = 'wholetumor_segmentation'
-    output_enhancing_name = 'enhancing_segmentation'
-    extra_parameters = [output_wholetumor_name, output_enhancing_name]
+    segmentation_name = 'downsample_wholetumor_segmentation'
+    model_name = 'wholetumor_downsample'
+    extra_parameters = [segmentation_name, model_name]
 
-    pipeline.execute('segment', output, None, None, output_folder, output_suffix, method, extra_parameters)
+    output = pipeline.execute('segment', output, None, None, output_folder, output_suffix, method, extra_parameters)
+
+    # #--------------------------------------------------------------------#
+
+    # # #--------------------------------------------------------------------#
+    # Upsampling Step
+    # Available methods: 'slicer_resample'
+
+    if not preprocessed:
+        output_folder = './INPUT_DATA/DOWNSAMPLE_NIFTI'
+        output_suffix = '_downsampled'
+
+        method = 'slicer_resample'
+
+        dimensions = [1,1,1]
+        interpolation_mode = 'nn'
+        extra_parameters = [dimensions, interpolation_mode]
+
+        output_upsample['wholetumor_downsample'] = pipeline.execute('resample', output, None, None, output_folder, output_suffix, method, extra_parameters)['wholetumor_downsample']
+
+    # #--------------------------------------------------------------------#
+
+    # # # #--------------------------------------------------------------------#
+    # # # Normalizing Step
+    # # # Available methods: 'zeromean_normalize'
+
+    if not no_ss:
+        output_folder = './INPUT_DATA/NORMALIZED_NIFTI'
+        output_suffix = '_normalized'
+
+        method = 'zeromean_normalize'
+
+        mask = 'mask'
+        extra_parameters = [mask]
+
+        output = pipeline.execute('normalize', output_upsample, None, None, output_folder, output_suffix, method, extra_parameters)
+
+    # # #--------------------------------------------------------------------#
+
+    # # #--------------------------------------------------------------------#
+    # # Segmentation Step
+    # # Available methods: 'deepneuro_segment'
+
+    output_folder = final_output_folder
+    output_suffix = ''
+
+    method = 'deepneuro_segment'
+
+    segmentation_name = 'wholetumor_segmentation'
+    model_name = 'upsample_wholetumor'
+    extra_parameters = [segmentation_name, model_name]
+
+    output = pipeline.execute('segment', output, None, None, output_folder, output_suffix, method, extra_parameters)
+
+    # #--------------------------------------------------------------------#
+
+    # # #--------------------------------------------------------------------#
+    # # Segmentation Step
+    # # Available methods: 'deepneuro_segment'
+
+    output_folder = final_output_folder
+    output_suffix = ''
+
+    method = 'deepneuro_segment'
+
+    segmentation_name = 'enhancingtumor_segmentation'
+    model_name = 'enhancingtumor'
+    extra_parameters = [segmentation_name, model_name]
+
+    output = pipeline.execute('segment', output, None, None, output_folder, output_suffix, method, extra_parameters)
 
     # #--------------------------------------------------------------------#
 

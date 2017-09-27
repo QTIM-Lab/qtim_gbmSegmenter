@@ -17,7 +17,7 @@ def segmentation_docker(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final
         for path in paths:
             docker_command += [os.path.abspath(path).split(mounted_dir,1)[1][1:]]
 
-        # docker_command += ['-gpu_num', str(gpu_num)]
+        docker_command += ['-gpu_num', str(gpu_num)]
 
         if kwargs is not None:
             for key, value in kwargs.iteritems():
@@ -57,4 +57,10 @@ if __name__ == '__main__':
     FLAIR = '/home/administrator/test_data/TATA/TATA_FLAIR_nobias_isotropic_reg.nii.gz'
     OUTPUT = '/home/administrator/test_data/TATA'
 
-    segmentation_docker(T2, T1, T1POST, FLAIR, OUTPUT, interactive=False, niftis=True, preprocessed=True, no_ss=False)
+    T2 = '/home/administrator/test_data/NORMALIZED_NIFTI/TATA_T2_nobias_isotropic_reg_ss_normalized.nii.gz'
+    T1 = '/home/administrator/test_data/NORMALIZED_NIFTI/TATA_T1_nobias_isotropic_reg_ss_normalized.nii.gz'
+    T1POST = '/home/administrator/test_data/NORMALIZED_NIFTI/TATA_T1C_nobias_isotropic_reg_ss_normalized.nii.gz'
+    FLAIR = '/home/administrator/test_data/NORMALIZED_NIFTI/TATA_FLAIR_nobias_isotropic_reg_ss_normalized.nii.gz'
+    OUTPUT = '/home/administrator/test_data/TATA'
+
+    segmentation_docker(T2, T1, T1POST, FLAIR, OUTPUT, interactive=False, niftis=True, preprocessed=True, no_ss=True)

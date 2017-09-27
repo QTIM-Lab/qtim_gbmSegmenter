@@ -189,7 +189,7 @@ RUN wget -O /home/models/upsample_wholetumor.h5 "https://www.dropbox.com/s/r4pel
 
 RUN mv -v /home/models /home/qtim_gbmSegmenter/qtim_gbmSegmenter/DeepLearningLibrary/model_data/
 
-RUN echo checkpoint1
+RUN echo checkpoint4
 
 RUN git pull
 

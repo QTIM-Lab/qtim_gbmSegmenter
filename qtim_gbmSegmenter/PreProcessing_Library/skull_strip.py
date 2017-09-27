@@ -23,6 +23,7 @@ def skull_strip_fsl(input_volumes, output_filenames, output_mask_suffix='_mask',
         print ' '.join(bet_base_command)
         print input_volumes
         print '\n'
+        call('source /root/.bashrc', shell=True)
         print 'Using FSL\'s BET2 (Brain Extraction Tool) to skull-strip ' + bet_volume + ' to output volume ' + output_filenames['T2'] + '...'
         call(' '.join(bet_base_command), shell=True)
 

@@ -19,6 +19,10 @@ def segment_deepneuro(input_volumes, output_filenames, output_segmentation_name,
         for modality_code in ['FLAIR', 'T2', 'T1', 'T1POST', 'wholetumor_downsample']:
             segmentation_input_filenames += [input_volumes[modality_code]]
 
+    if model_name == 'wholetumor':
+        for modality_code in ['FLAIR', 'T1POST']:
+            segmentation_input_filenames += [input_volumes[modality_code]]         
+
     if model_name == 'enhancingtumor':
         for modality_code in ['FLAIR', 'T2', 'T1', 'T1POST', 'upsample_wholetumor']:
             segmentation_input_filenames += [input_volumes[modality_code]]

@@ -7,6 +7,7 @@ from qtim_tools.qtim_utilities.format_util import convert_input_2_numpy
 from qtim_tools.qtim_preprocessing.image import fill_in_convex_outline
 from qtim_tools.qtim_utilities.nifti_util import save_numpy_2_nifti
 from scipy import misc, ndimage
+from scipy.ndimage.morphology import binary_fill_holes
 
 from qtim_gbmSegmenter.DeepLearningLibrary.models import skull_strip_models, evaluate_model, load_old_model
 
@@ -48,24 +49,37 @@ def skull_strip_deepneuro(input_volumes, output_filenames, output_mask_suffix='_
     model_dict = skull_strip_models()
 
     target_model = model_dict['FLAIR']
-    target_file = input_volumes['FLAIR']
+
+    skullstripping_input_filenames = []
+    for modality_code in ['FLAIR', 'T1POST']:
+        skullstripping_input_filenames += [input_volumes[modality_code]]
 
     output_mask = os.path.join(os.path.dirname(target_file), os.path.basename(replace_suffix(target_file, '', output_mask_suffix)))
     
     evaluate_model(load_old_model(target_model), target_file, output_mask, patch_shape=(32,32,32))
-    fill_in_convex_outline(output_mask, output_mask, output_mask)
+
+    mask_data = convert_input_2_numpy(output_mask)
+
+    filled_mask_data = np.copy(mask_data)
+    for i in range(mask.shape[0]):
+        filled_mask_data[i,:,:] = binary_fill_holes(mask[i,:,:]).astype(np.float)
+    for j in range(mask.shape[1]):
+        filled_mask_data[:,j,:] = binary_fill_holes(mask[:,j,:]).astype(np.float)
+    for k in range(mask.shape[2]):
+        filled_mask_data[:,:,k] = binary_fill_holes(mask[:,:,k]).astype(np.float)
 
     return_filenames = {}
-    return_filenames['mask'] = output_mask
 
     for key, input_volume in input_volumes.iteritems():
 
-        label_data = convert_input_2_numpy(output_mask)
         crop_data = convert_input_2_numpy(input_volume)
-        crop_data[label_data == 0] = 0
+        crop_data[filled_mask_data == 0] = 0
         save_numpy_2_nifti(crop_data, input_volume, output_filenames[key])
 
         return_filenames[key] = output_filenames[key]
+
+    save_numpy_2_nifti(filled_mask_data, output_mask, output_mask)
+    return_filenames['mask'] = output_mask
 
     return return_filenames
 

@@ -10,7 +10,7 @@ import qtim_gbmSegmenter.PreProcessing_Library.common as common
 def skull_strip_models():
 
     model_dict = {}
-    for modality in ['FLAIR', 'T2']:
+    for modality in ['skullstripping']:
         model_dict[modality] = os.path.join(os.path.dirname(__file__),'model_data', modality + '_ss.h5')
 
     return model_dict

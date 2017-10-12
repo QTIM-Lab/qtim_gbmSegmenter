@@ -55,9 +55,9 @@ def skull_strip_deepneuro(input_volumes, output_filenames, output_mask_suffix='_
     for modality_code in ['FLAIR', 'T1POST']:
         skullstripping_input_filenames += [input_volumes[modality_code]]
 
-    output_mask = os.path.join(os.path.dirname(target_file), os.path.basename(replace_suffix(target_file, '', output_mask_suffix)))
+    output_mask = os.path.join(os.path.dirname(skullstripping_input_filenames['FLAIR']), os.path.basename(replace_suffix(skullstripping_input_filenames['FLAIR'], '', output_mask_suffix)))
     
-    evaluate_model(load_old_model(target_model), target_file, output_mask, patch_shape=(32,32,32))
+    evaluate_model(load_old_model(target_model), skullstripping_input_filenames, output_mask, patch_shape=(32,32,32))
 
     mask_data = convert_input_2_numpy(output_mask)
 

@@ -24,7 +24,7 @@ def segment_deepneuro(input_volumes, output_filenames, output_segmentation_name,
             segmentation_input_filenames += [input_volumes[modality_code]]         
 
     if model_name == 'enhancingtumor':
-        for modality_code in ['FLAIR', 'T2', 'T1', 'T1POST', 'upsample_wholetumor']:
+        for modality_code in ['FLAIR', 'T2', 'T1', 'T1POST', 'wholetumor']:
             segmentation_input_filenames += [input_volumes[modality_code]]
 
     output_segmentation = os.path.join(os.path.dirname(output_filenames['T2']), output_segmentation_name + '-label.nii.gz')

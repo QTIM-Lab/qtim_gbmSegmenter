@@ -49,7 +49,7 @@ def skull_strip_deepneuro(input_volumes, output_filenames, output_mask_suffix='_
 
     model_dict = skull_strip_models()
 
-    target_model = model_dict['FLAIR']
+    target_model = model_dict['skullstripping']
 
     skullstripping_input_filenames = []
     for modality_code in ['FLAIR', 'T1POST']:

@@ -1,5 +1,6 @@
 import os
 import fnmatch
+import numpy as np
 
 from subprocess import call
 from qtim_tools.qtim_utilities.file_util import replace_suffix
@@ -62,11 +63,11 @@ def skull_strip_deepneuro(input_volumes, output_filenames, output_mask_suffix='_
 
     filled_mask_data = np.copy(mask_data)
     for i in range(mask.shape[0]):
-        filled_mask_data[i,:,:] = binary_fill_holes(mask[i,:,:]).astype(np.float)
+        filled_mask_data[i,:,:] = binary_fill_holes(mask[i,:,:]).astype(float)
     for j in range(mask.shape[1]):
-        filled_mask_data[:,j,:] = binary_fill_holes(mask[:,j,:]).astype(np.float)
+        filled_mask_data[:,j,:] = binary_fill_holes(mask[:,j,:]).astype(float)
     for k in range(mask.shape[2]):
-        filled_mask_data[:,:,k] = binary_fill_holes(mask[:,:,k]).astype(np.float)
+        filled_mask_data[:,:,k] = binary_fill_holes(mask[:,:,k]).astype(float)
 
     return_filenames = {}
 

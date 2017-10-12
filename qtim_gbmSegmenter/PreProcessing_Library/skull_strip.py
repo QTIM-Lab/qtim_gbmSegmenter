@@ -62,12 +62,12 @@ def skull_strip_deepneuro(input_volumes, output_filenames, output_mask_suffix='_
     mask_data = convert_input_2_numpy(output_mask)
 
     filled_mask_data = np.copy(mask_data)
-    for i in range(mask.shape[0]):
-        filled_mask_data[i,:,:] = binary_fill_holes(mask[i,:,:]).astype(float)
-    for j in range(mask.shape[1]):
-        filled_mask_data[:,j,:] = binary_fill_holes(mask[:,j,:]).astype(float)
-    for k in range(mask.shape[2]):
-        filled_mask_data[:,:,k] = binary_fill_holes(mask[:,:,k]).astype(float)
+    for i in range(mask_data.shape[0]):
+        filled_mask_data[i,:,:] = binary_fill_holes(mask_data[i,:,:]).astype(float)
+    for j in range(mask_data.shape[1]):
+        filled_mask_data[:,j,:] = binary_fill_holes(mask_data[:,j,:]).astype(float)
+    for k in range(mask_data.shape[2]):
+        filled_mask_data[:,:,k] = binary_fill_holes(mask_data[:,:,k]).astype(float)
 
     return_filenames = {}
 

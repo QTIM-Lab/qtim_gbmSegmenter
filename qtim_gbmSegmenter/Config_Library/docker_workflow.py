@@ -151,7 +151,7 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     mask = 'mask'
     extra_parameters = [mask]
 
-    output = pipeline.execute('normalize', output_upsample, None, None, output_folder, output_suffix, method, extra_parameters)
+    output = pipeline.execute('normalize', output, None, None, output_folder, output_suffix, method, extra_parameters)
 
     # # #--------------------------------------------------------------------#
 

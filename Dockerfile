@@ -181,15 +181,15 @@ RUN python /home/qtim_gbmSegmenter/setup.py develop
 
 # Copy in models
 RUN mkdir -p /home/models
-RUN wget -O /home/models/skullstripping.h5 "https://www.dropbox.com/s/gn2w4u4vw1orcyj/FLAIRT1post_ss.h5?dl=1"
+RUN wget -O /home/models/FLAIR_ss.h5 "https://www.dropbox.com/s/lckmz8ptihxamtp/FLAIR_ss.h5?dl=1"
 RUN wget -O /home/models/enhancingtumor.h5 "https://www.dropbox.com/s/usdal6cbkw3bceu/enhancingtumor_BRATS_submission.h5?dl=1"
-RUN wget -O /home/models/wholetumor.h5 "https://www.dropbox.com/s/z7kgc82vhwa85k7/wholetumor_FLAIR_T1post.h5?dl=1"
+RUN wget -O /home/models/wholetumor.h5 "https://www.dropbox.com/s/ff8j2equqnn04as/wholetumor_BRATS_only.h5?dl=1"
 RUN wget -O /home/models/wholetumor_downsample.h5 "https://www.dropbox.com/s/h2pj9hzruz3hq9a/wholetumor_downsampled_BRATS_submission.h5?dl=1"
 RUN wget -O /home/models/upsample_wholetumor.h5 "https://www.dropbox.com/s/r4pelwcsscnuvc9/upsample_wholetumor_BRATS_submission.h5?dl=1"
 
 RUN mv -v /home/models /home/qtim_gbmSegmenter/qtim_gbmSegmenter/DeepLearningLibrary/model_data/
 
-RUN echo 9
+RUN echo 1
 RUN git pull
 
 # Commands at startup.

@@ -30,11 +30,7 @@ def docker_segmentation(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final
     print ' '.join(docker_command)
     call(' '.join(docker_command), shell=True)
 
-def queue_dockers(commands, gpu):
-
-    for command in commands:
-        docker_segmentation(command['T2'], command['T1'], command['T1POST'], command['FLAIR'], command['final_output_folder'], gpu, niftis=True, preprocessed=True, keep_outputs=True)
-
+def queue_dockers(commands, gpu_list):
 
     return
 

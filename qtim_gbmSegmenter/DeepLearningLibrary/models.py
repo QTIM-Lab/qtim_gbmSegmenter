@@ -10,8 +10,8 @@ import qtim_gbmSegmenter.PreProcessing_Library.common as common
 def skull_strip_models():
 
     model_dict = {}
-    for modality in ['skullstripping']:
-        model_dict[modality] = os.path.join(os.path.dirname(__file__),'model_data', modality + '.h5')
+    for modality in ['FLAIR', 'T2']:
+        model_dict[modality] = os.path.join(os.path.dirname(__file__),'model_data', modality + '_ss.h5')
 
     return model_dict
 
@@ -36,7 +36,7 @@ def evaluate_model(model, input_filenames, output_filename, patch_shape):
     output_shape[1] = 1
     output_shape = tuple(output_shape)
 
-    output_data = predict_patches_one_image(input_data, patch_shape, model, output_shape, repetitions=32, model_batch_size=100)
+    output_data = predict_patches_one_image(input_data, patch_shape, model, output_shape, repetitions=16, model_batch_size=100)
 
     save_prediction(output_data, output_filename, input_affine=input_affine)
 

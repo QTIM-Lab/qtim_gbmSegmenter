@@ -120,9 +120,25 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     extra_parameters = [output_mask_suffix]
 
     output = pipeline.execute('skull_strip', output, None, None, output_folder, output_suffix, method, extra_parameters)
-    output_upsample = output
 
     # # # # #--------------------------------------------------------------------#
+
+    # # # #--------------------------------------------------------------------#
+    # # # Normalizing Step
+    # # # Available methods: 'zeromean_normalize'
+
+    output_folder = './INPUT_DATA/NORMALIZED_NIFTI'
+    output_suffix = '_normalized'
+
+    method = 'zeromean_normalize'
+
+    mask = 'mask'
+    extra_parameters = [mask]
+
+    output = pipeline.execute('normalize', output, None, None, output_folder, output_suffix, method, extra_parameters)
+    output_upsample = output
+
+    # # #--------------------------------------------------------------------#
 
     # # #--------------------------------------------------------------------#
     # Downsampling Step
@@ -140,22 +156,6 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     output = pipeline.execute('resample', output, None, None, output_folder, output_suffix, method, extra_parameters)
 
     # #--------------------------------------------------------------------#
-
-    # # # #--------------------------------------------------------------------#
-    # # # Normalizing Step
-    # # # Available methods: 'zeromean_normalize'
-
-    output_folder = './INPUT_DATA/NORMALIZED_NIFTI'
-    output_suffix = '_normalized'
-
-    method = 'zeromean_normalize'
-
-    mask = 'mask'
-    extra_parameters = [mask]
-
-    output = pipeline.execute('normalize', output, None, None, output_folder, output_suffix, method, extra_parameters)
-
-    # # #--------------------------------------------------------------------#
 
     # # #--------------------------------------------------------------------#
     # # Segmentation Step

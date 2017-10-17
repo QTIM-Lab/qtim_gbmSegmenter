@@ -191,22 +191,6 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
 
     # #--------------------------------------------------------------------#
 
-    # # # #--------------------------------------------------------------------#
-    # # # Normalizing Step
-    # # # Available methods: 'zeromean_normalize'
-
-    output_folder = './INPUT_DATA/NORMALIZED_NIFTI'
-    output_suffix = '_normalized'
-
-    method = 'zeromean_normalize'
-
-    mask = 'mask'
-    extra_parameters = [mask]
-
-    output = pipeline.execute('normalize', output_upsample, None, None, output_folder, output_suffix, method, extra_parameters)
-
-    # # #--------------------------------------------------------------------#
-
     # # #--------------------------------------------------------------------#
     # # Segmentation Step
     # # Available methods: 'deepneuro_segment'
@@ -220,7 +204,7 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
     model_name = 'upsample_wholetumor'
     extra_parameters = [segmentation_name, model_name]
 
-    output = pipeline.execute('segment', output, None, None, output_folder, output_suffix, method, extra_parameters)
+    output = pipeline.execute('segment', output_upsample, None, None, output_folder, output_suffix, method, extra_parameters)
 
     # #--------------------------------------------------------------------#
 

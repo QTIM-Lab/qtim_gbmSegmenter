@@ -66,7 +66,7 @@ Here are some details about what each of those parameters mean.
 * T2, T1pre, T1post, FLAIR: Filepaths to DICOM folders. Can be filepaths to niftis if the -niftis flag is set.
 * output_folder: A filepath to your output folder. This folder will be created if it does not already exist.
 * -gpu_num: Which CUDA GPU ID # to use.
-* -niftis: Input nifti files instead of DIOCM folders.
+* -niftis: Input nifti files instead of DICOM folders.
 * -nobias: Skip the bias correction step.
 * -preprocessed: Skip bias correction, resampling, and registration.
 * -keep_outputs: Do not delete files generated from intermediary steps.

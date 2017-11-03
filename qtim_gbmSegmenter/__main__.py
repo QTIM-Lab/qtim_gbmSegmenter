@@ -72,11 +72,11 @@ The following commands are available:
                 ''')
 
 
-        parser.add_argument('T2', type=str)
-        parser.add_argument('T1', type=str)
-        parser.add_argument('T1POST', type=str)
-        parser.add_argument('FLAIR', type=str)
-        parser.add_argument('output', type=str)
+        parser.add_argument('-T2', type=str)
+        parser.add_argument('-T1', type=str)
+        parser.add_argument('-T1POST', type=str)
+        parser.add_argument('-FLAIR', type=str)
+        parser.add_argument('-output', type=str)
         parser.add_argument('-gpu_num', nargs='?', const='0', type=str)  
         parser.add_argument('-niftis', action='store_true')  
         parser.add_argument('-nobias', action='store_true')

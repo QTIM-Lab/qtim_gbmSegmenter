@@ -185,7 +185,8 @@ def full_pipeline(T2_folder, T1_folder, T1POST_folder, FLAIR_folder, final_outpu
 
     dimensions = [1,1,1]
     interpolation_mode = 'nearestNeighbor'
-    extra_parameters = [dimensions, interpolation_mode]
+    reference_volume = output_upsample['T2']
+    extra_parameters = [dimensions, interpolation_mode, reference_volume]
 
     output_upsample['wholetumor_downsample'] = pipeline.execute('resample', output, None, None, output_folder, output_suffix, method, extra_parameters)['wholetumor_downsample']
 
